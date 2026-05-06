@@ -236,6 +236,9 @@ body {
   width: 180px;
   user-select: none;
   -webkit-user-drag: none;
+
+  animation: baconGlow 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(255, 120, 40, 0.35));
 }
 
 .orbit-bacon {
@@ -490,4 +493,18 @@ html, body {
 
 #spekBtn {
   animation: baconFloat 3s ease-in-out infinite;
+}
+
+@keyframes baconGlow {
+  0% {
+    filter: drop-shadow(0 0 10px rgba(255, 120, 40, 0.25));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 24px rgba(255, 120, 40, 0.55));
+  }
+
+  100% {
+    filter: drop-shadow(0 0 10px rgba(255, 120, 40, 0.25));
+  }
 }
