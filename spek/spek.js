@@ -34,19 +34,106 @@ let ownedSkins = ["default"];
 
 const skins = {
   default: {
+  displayName: "Default",
     image: "img/skins/bacon-default.png",
-    unlock: 0
-  },
+    unlock: 0,
+    category: "normal"
 
-  gold: {
-    image: "img/skins/bacon-gold.png",
-    unlock: 10
   },
 
   burned: {
+  displayName: "Burned",
     image: "img/skins/bacon-burned.png",
-    unlock: 50000
-  }
+    unlock: 250,
+    category: "normal"
+  },
+
+  gold: {
+  displayName: "Gold",
+    image: "img/skins/bacon-gold.png",
+    unlock: 10000,
+    category: "normal"
+  },
+    frozen: {
+    displayName: "Frozen",
+    image: "img/skins/bacon-frozen.png",
+    unlock: 50000,
+    category: "normal"
+  },
+      radioactive: {
+    displayName: "Radioactive",
+    image: "img/skins/bacon-radioactive.png",
+    unlock: 15000,
+    category: "normal"
+
+  },
+        rainbow: {
+    displayName: "Rainbow",
+    image: "img/skins/bacon-rainbow.png",
+    unlock: 50000,
+    category: "normal"
+  },
+          lightning: {
+    displayName: "Lightning",
+    image: "img/skins/bacon-lightning.png",
+    unlock: 125000,
+      category: "normal"
+
+  },
+            diamond: {
+    displayName: "Diamond",
+    image: "img/skins/bacon-diamond.png",
+    unlock: 350000,
+    category: "normal"
+  },
+              galaxy: {
+    displayName: "Galaxy",
+    image: "img/skins/bacon-galaxy.png",
+    unlock: 1000000,
+    category: "normal"
+  },
+                nerd: {
+    displayName: "Nerd",
+    image: "img/skins/bacon-nerd.png",
+    unlock: 500,
+      category: "meme"
+  },
+                  sigaret: {
+    displayName: "Cigarette",
+    image: "img/skins/bacon-cigarette.png",
+    unlock: 8000,
+    category: "meme"
+  },
+                    dronken: {
+    displayName: "Drunk",
+    image: "img/skins/bacon-drunk.png",
+    unlock: 20000,
+    category: "meme"
+  },
+                      skater: {
+    displayName: "Skater",
+    image: "img/skins/bacon-skater.png",
+    unlock: 35000,
+    category: "meme"
+  },
+     mcdonalds: {
+    displayName: "McDonalds",
+    image: "img/skins/bacon-mcdonalds.png",
+    unlock: 75000,
+    category: "meme"
+  },
+    kfc: {
+    displayName: "KFC",
+    image: "img/skins/bacon-kfc.png",
+    unlock: 90000,
+    category: "meme"
+  },
+                            duivel: {
+    displayName: "Devil",
+    image: "img/skins/bacon-devil.png",
+    unlock: 75000,
+    category: "meme"
+  },
 };
 
 const spekEl = document.getElementById("spekCount");
@@ -87,18 +174,102 @@ function updateSkinLocks() {
       btn.classList.remove("locked");
 
       btn.textContent =
-        skin.charAt(0).toUpperCase() + skin.slice(1);
+        skins[skin].displayName
 
     } else {
 
       btn.classList.add("locked");
 
       btn.textContent =
-        `${skin.charAt(0).toUpperCase() + skin.slice(1)} 🔒 (${required})`;
+        `${skins[skin].displayName} 🔒 (${required})`;
 
     }
 
   });
+
+  function renderSkins() {
+
+  const normalContainer =
+    document.getElementById("normalSkins");
+
+  const memeContainer =
+    document.getElementById("memeSkins");
+
+  normalContainer.innerHTML = "";
+  memeContainer.innerHTML = "";
+
+  Object.entries(skins).forEach(([key, skin]) => {
+
+    const btn = document.createElement("button");
+
+    btn.className = "skin-btn";
+    btn.dataset.skin = key;
+
+    btn.innerHTML = `
+      <img src="${skin.image}">
+      <span>${skin.displayName}</span>
+    `;
+
+    if (skin.category === "meme") {
+      memeContainer.appendChild(btn);
+    } else {
+      normalContainer.appendChild(btn);
+    }
+
+  });
+
+}
+document.addEventListener("click", async (e) => {
+
+  const btn = e.target.closest(".skin-btn");
+
+  if (!btn) return;
+
+  const skin = btn.dataset.skin;
+
+  // al gekocht
+  if (ownedSkins.includes(skin)) {
+
+    currentSkin = skin;
+
+    applySkin();
+
+    await saveToLeaderboard();
+
+    return;
+  }
+
+  const price = skins[skin].unlock;
+
+  // niet genoeg spek
+  if (spek < price) {
+
+    showAlert(
+      "🔒 Niet genoeg spek",
+      `Nog ${price - spek} spek nodig`
+    );
+
+    return;
+  }
+
+  // kopen
+  spek -= price;
+
+  ownedSkins.push(skin);
+
+  currentSkin = skin;
+
+  updateUI();
+  applySkin();
+
+  showAlert(
+    "🔥 Skin gekocht",
+    `${skins[skin].displayName} unlocked`
+  );
+
+  await saveToLeaderboard();
+
+});
 
 }
 function showAlert(title, text) {
@@ -466,11 +637,12 @@ setInterval(() => {
 // INIT
 renderShop();
 renderInventory();
+
+renderSkins();
+
 updateUI();
 updateSkinLocks();
 applySkin();
-
-document.querySelectorAll(".skin-btn").forEach(btn => {
 
   const skin = btn.dataset.skin;
 
@@ -518,5 +690,3 @@ btn.onclick = async () => {
 
   await saveToLeaderboard();
 };
-
-});
