@@ -56,7 +56,12 @@ const clickSound = new Audio("click.mp3");
 
 clickSound.volume = 0.3;
 function applySkin() {
+
   mainBacon.src = skins[currentSkin].image;
+
+  document.querySelectorAll(".orbit-bacon").forEach(bacon => {
+    bacon.src = skins[currentSkin].image;
+  });
 
   document.querySelectorAll(".skin-btn").forEach(btn => {
     btn.classList.remove("active");
@@ -65,8 +70,8 @@ function applySkin() {
       btn.classList.add("active");
     }
   });
-}
 
+}
 function updateSkinLocks() {
 
   document.querySelectorAll(".skin-btn").forEach(btn => {
@@ -285,7 +290,9 @@ function spawnOrbit(radius = 80, speed = 1) {
   orbit.className = "orbit";
 
 const el = document.createElement("img");
-el.src = "img/bacon.png";
+
+el.src = skins[currentSkin].image;
+
 el.className = "orbit-bacon";
 
   orbit.appendChild(el);
