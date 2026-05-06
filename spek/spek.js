@@ -133,6 +133,8 @@ const upgrades = [
 function updateUI() {
   spekEl.textContent = spek;
   spsEl.textContent = spekPerSecond;
+
+  updateSkinLocks();
 }
 
 spekBtn.onclick = () => {
