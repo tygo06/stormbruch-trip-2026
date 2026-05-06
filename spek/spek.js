@@ -29,7 +29,7 @@ let spek = 0;
 let spekPerSecond = 0;
 let orbitCount = 0;
 let gameLoaded = false;
-let currentSkin = localStorage.getItem("equippedSkin") || "default";
+let currentSkin = "default";
 
 const skins = {
   default: "img/skins/bacon-default.png",
@@ -338,10 +338,10 @@ setInterval(() => {
 async function saveToLeaderboard() {
   if (spek <= 0) return;
 
-  await setDoc(doc(db, "players", playerName), {
-    spek: spek,
-    sps: spekPerSecond,
-    orbitCount: orbitCount,
+await setDoc(doc(db, "players", playerName), {
+  spek: spek,
+  sps: spekPerSecond,
+  currentSkin: currentSkin,
 
     upgrades: upgrades.map(u => ({
       owned: u.owned,
@@ -356,8 +356,10 @@ async function loadCloudSave() {
   const docRef = doc(db, "players", playerName);
   const docSnap = await getDoc(docRef);
 
-  if (docSnap.exists()) {
-    const data = docSnap.data();
+if (docSnap.exists()) {
+  const data = docSnap.data();
+
+  currentSkin = data.currentSkin || "default";
 
     spek = data.spek || 0;
     spekPerSecond = data.sps || 0;
@@ -400,8 +402,6 @@ applySkin();
 document.querySelectorAll(".skin-btn").forEach(btn => {
   btn.onclick = () => {
 currentSkin = btn.dataset.skin;
-
-localStorage.setItem("equippedSkin", currentSkin);
 
 applySkin();
   };
