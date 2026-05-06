@@ -76,18 +76,27 @@ function updateSkinLocks() {
 
   document.querySelectorAll(".skin-btn").forEach(btn => {
 
-    const required = Number(btn.dataset.required || 0);
+    const skin = btn.dataset.skin;
+    const required = skins[skin].unlock;
 
     if (spek >= required) {
+
       btn.classList.remove("locked");
+
     } else {
+
       btn.classList.add("locked");
+
+      if (required > 0) {
+        btn.textContent =
+          `${skin.charAt(0).toUpperCase() + skin.slice(1)} 🔒 (${required.toLocaleString()})`;
+      }
+
     }
 
   });
 
 }
-
 function showAlert(title, text) {
 
   const alert = document.getElementById("customAlert");
