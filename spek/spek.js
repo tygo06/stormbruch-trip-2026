@@ -68,11 +68,15 @@ function updateUI() {
 
 spekBtn.onclick = () => {
 
-  spekBtn.style.transform = "translate(-50%, -50%) scale(0.92)";
+spekBtn.style.transform = "translate(-50%, -50%) scale(0.82) rotate(-4deg)";
 
-  setTimeout(() => {
-    spekBtn.style.transform = "translate(-50%, -50%) scale(1)";
-  }, 100);
+setTimeout(() => {
+  spekBtn.style.transform = "translate(-50%, -50%) scale(1.04) rotate(2deg)";
+}, 100);
+
+setTimeout(() => {
+  spekBtn.style.transform = "translate(-50%, -50%) scale(1)";
+}, 180);
 
   spek++;
 
