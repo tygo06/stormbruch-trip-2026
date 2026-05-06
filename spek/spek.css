@@ -469,3 +469,22 @@ html, body {
     border-radius: 8px;
   }
 }
+
+
+@keyframes baconFloat {
+  0% {
+    transform: translate(-50%, -50%) translateY(0px);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) translateY(-8px);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) translateY(0px);
+  }
+}
+
+#spekBtn {
+  animation: baconFloat 3s ease-in-out infinite;
+}
