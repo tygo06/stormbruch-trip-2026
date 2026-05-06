@@ -380,11 +380,6 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-
-setInterval(() => {
-  saveToLeaderboard();
-}, 10000);
-
 onSnapshot(collection(db, "players"), (snapshot) => {
   const players = [];
 
@@ -570,7 +565,7 @@ setInterval(() => {
   if (!gameLoaded) return; // 🔥 dit fixt je probleem
 
   saveToLeaderboard();
-}, 10000);
+}, 30000);
 
 async function saveToLeaderboard() {
   if (spek <= 0) return;
@@ -590,24 +585,7 @@ await setDoc(doc(db, "players", playerName), {
   });
 }
 
-const skinsMenu =
-  document.getElementById("skinsMenu");
 
-document
-  .getElementById("openSkinsBtn")
-  .onclick = () => {
-
-    skinsMenu.classList.add("active");
-
-};
-
-document
-  .getElementById("closeSkinsBtn")
-  .onclick = () => {
-
-    skinsMenu.classList.remove("active");
-
-};
 
 async function loadCloudSave() {
   const docRef = doc(db, "players", playerName);
@@ -661,3 +639,22 @@ renderSkins();
 updateUI();
 updateSkinLocks();
 applySkin();
+
+const skinsMenu =
+  document.getElementById("skinsMenu");
+
+document
+  .getElementById("openSkinsBtn")
+  .onclick = () => {
+
+    skinsMenu.classList.add("active");
+
+};
+
+document
+  .getElementById("closeSkinsBtn")
+  .onclick = () => {
+
+    skinsMenu.classList.remove("active");
+
+};
