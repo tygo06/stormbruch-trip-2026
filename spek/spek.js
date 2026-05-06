@@ -435,25 +435,18 @@ applySkin();
 
 document.querySelectorAll(".skin-btn").forEach(btn => {
 
-  const skin = btn.dataset.skin;
+  btn.onclick = () => {
 
-  const required = skins[skin].unlock;
+    const required = Number(btn.dataset.required || 0);
 
-  if (required > 0) {
-    btn.textContent += ` (${required.toLocaleString()})`;
-  }
-
-  btn.onclick = async () => {
-
-    if (!isSkinUnlocked(skin)) {
-      alert(`Nog locked! Nodig: ${required.toLocaleString()} spek`);
+    if (spek < required) {
+      alert(`Je hebt ${required} spek nodig.`);
       return;
     }
 
-    currentSkin = skin;
+    currentSkin = btn.dataset.skin;
 
     applySkin();
-
-    await saveToLeaderboard();
   };
+
 });
