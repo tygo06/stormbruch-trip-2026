@@ -590,6 +590,25 @@ await setDoc(doc(db, "players", playerName), {
   });
 }
 
+const skinsMenu =
+  document.getElementById("skinsMenu");
+
+document
+  .getElementById("openSkinsBtn")
+  .onclick = () => {
+
+    skinsMenu.classList.add("active");
+
+};
+
+document
+  .getElementById("closeSkinsBtn")
+  .onclick = () => {
+
+    skinsMenu.classList.remove("active");
+
+};
+
 async function loadCloudSave() {
   const docRef = doc(db, "players", playerName);
   const docSnap = await getDoc(docRef);
