@@ -508,3 +508,31 @@ html, body {
     filter: drop-shadow(0 0 10px rgba(255, 120, 40, 0.25));
   }
 }
+
+.skins-menu {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.skin-btn {
+  background: #1a262c;
+  border: 2px solid transparent;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.skin-btn:hover {
+  transform: translateY(-2px);
+  background: #22333b;
+}
+
+.skin-btn.active {
+  border-color: #2dd4bf;
+  box-shadow: 0 0 12px rgba(45, 212, 191, 0.4);
+}
