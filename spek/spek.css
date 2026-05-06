@@ -546,3 +546,69 @@ html, body {
 .skin-btn.locked:hover {
   transform: none;
 }
+
+.custom-alert {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: 0.25s;
+  z-index: 999;
+}
+
+.custom-alert.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.custom-alert-box {
+  background: #111a1f;
+
+  border: 1px solid rgba(45,212,191,0.2);
+
+  border-radius: 18px;
+
+  padding: 24px;
+
+  width: 320px;
+
+  text-align: center;
+
+  box-shadow:
+    0 0 30px rgba(45,212,191,0.12),
+    0 20px 40px rgba(0,0,0,0.45);
+
+  animation: popIn 0.25s ease;
+}
+
+.custom-alert-box h3 {
+  margin-top: 0;
+  color: #2dd4bf;
+  font-size: 24px;
+}
+
+.custom-alert-box p {
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

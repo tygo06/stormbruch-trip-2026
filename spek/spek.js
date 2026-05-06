@@ -83,6 +83,20 @@ function updateSkinLocks() {
 
 }
 
+function showAlert(title, text) {
+
+  const alert = document.getElementById("customAlert");
+
+  document.getElementById("alertTitle").textContent = title;
+  document.getElementById("alertText").textContent = text;
+
+  alert.classList.add("active");
+
+  setTimeout(() => {
+    alert.classList.remove("active");
+  }, 2200);
+}
+
 function isSkinUnlocked(skin) {
   return spek >= skins[skin].unlock;
 }
@@ -446,7 +460,10 @@ document.querySelectorAll(".skin-btn").forEach(btn => {
   btn.onclick = async () => {
 
     if (!isSkinUnlocked(skin)) {
-      alert(`Nog locked! Nodig: ${required.toLocaleString()} spek`);
+      showAlert(
+  "🔒 Skin locked",
+  `Nog ${required - spek} spek nodig`
+);
       return;
     }
 
