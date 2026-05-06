@@ -379,9 +379,11 @@ if (docSnap.exists()) {
 
   updateUI();
   renderShop();
-  renderInventory();
+renderInventory();
 
-  gameLoaded = true;
+applySkin();
+
+gameLoaded = true;
 }
 
 for (let i = 0; i < orbitCount; i++) {
@@ -400,9 +402,12 @@ updateUI();
 applySkin();
 
 document.querySelectorAll(".skin-btn").forEach(btn => {
-  btn.onclick = () => {
-currentSkin = btn.dataset.skin;
+  btn.onclick = async () => {
 
-applySkin();
+    currentSkin = btn.dataset.skin;
+
+    applySkin();
+
+    await saveToLeaderboard();
   };
 });
