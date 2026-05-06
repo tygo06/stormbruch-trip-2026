@@ -186,38 +186,6 @@ function updateSkinLocks() {
     }
 
   });
-
-  function renderSkins() {
-
-  const normalContainer =
-    document.getElementById("normalSkins");
-
-  const memeContainer =
-    document.getElementById("memeSkins");
-
-  normalContainer.innerHTML = "";
-  memeContainer.innerHTML = "";
-
-  Object.entries(skins).forEach(([key, skin]) => {
-
-    const btn = document.createElement("button");
-
-    btn.className = "skin-btn";
-    btn.dataset.skin = key;
-
-    btn.innerHTML = `
-      <img src="${skin.image}">
-      <span>${skin.displayName}</span>
-    `;
-
-    if (skin.category === "meme") {
-      memeContainer.appendChild(btn);
-    } else {
-      normalContainer.appendChild(btn);
-    }
-
-  });
-
 }
 document.addEventListener("click", async (e) => {
 
@@ -270,8 +238,39 @@ document.addEventListener("click", async (e) => {
   await saveToLeaderboard();
 
 });
+function renderSkins() {
+
+  const normalContainer =
+    document.getElementById("normalSkins");
+
+  const memeContainer =
+    document.getElementById("memeSkins");
+
+  normalContainer.innerHTML = "";
+  memeContainer.innerHTML = "";
+
+  Object.entries(skins).forEach(([key, skin]) => {
+
+    const btn = document.createElement("button");
+
+    btn.className = "skin-btn";
+    btn.dataset.skin = key;
+
+    btn.innerHTML = `
+      <img src="${skin.image}">
+      <span>${skin.displayName}</span>
+    `;
+
+    if (skin.category === "meme") {
+      memeContainer.appendChild(btn);
+    } else {
+      normalContainer.appendChild(btn);
+    }
+
+  });
 
 }
+
 function showAlert(title, text) {
 
   const alert = document.getElementById("customAlert");
@@ -384,7 +383,7 @@ onAuthStateChanged(auth, (user) => {
 
 setInterval(() => {
   saveToLeaderboard();
-}, 2000);
+}, 10000);
 
 onSnapshot(collection(db, "players"), (snapshot) => {
   const players = [];
@@ -643,50 +642,3 @@ renderSkins();
 updateUI();
 updateSkinLocks();
 applySkin();
-
-  const skin = btn.dataset.skin;
-
-btn.onclick = async () => {
-
-  // al gekocht = equippen
-  if (ownedSkins.includes(skin)) {
-
-    currentSkin = skin;
-
-    applySkin();
-
-    await saveToLeaderboard();
-
-    return;
-  }
-
-  const price = skins[skin].unlock;
-
-  // niet genoeg spek
-  if (spek < price) {
-
-    showAlert(
-      "🔒 Niet genoeg spek",
-      `Nog ${price - spek} spek nodig`
-    );
-
-    return;
-  }
-
-  // kopen
-  spek -= price;
-
-  ownedSkins.push(skin);
-
-  currentSkin = skin;
-
-  updateUI();
-  applySkin();
-
-  showAlert(
-    "🔥 Skin gekocht",
-    `${skin} unlocked`
-  );
-
-  await saveToLeaderboard();
-};
