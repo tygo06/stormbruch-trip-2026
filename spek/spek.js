@@ -29,7 +29,7 @@ let spek = 0;
 let spekPerSecond = 0;
 let orbitCount = 0;
 let gameLoaded = false;
-let currentSkin = "default";
+let currentSkin = localStorage.getItem("equippedSkin") || "default";
 
 const skins = {
   default: "img/skins/bacon-default.png",
@@ -399,8 +399,10 @@ applySkin();
 
 document.querySelectorAll(".skin-btn").forEach(btn => {
   btn.onclick = () => {
-    currentSkin = btn.dataset.skin;
+currentSkin = btn.dataset.skin;
 
-    applySkin();
+localStorage.setItem("equippedSkin", currentSkin);
+
+applySkin();
   };
 });
