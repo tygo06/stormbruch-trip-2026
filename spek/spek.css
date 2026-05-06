@@ -220,13 +220,19 @@ body {
   margin: 0 auto;
 }
 
-/* center punt */
 #spekBtn {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 110px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+#spekBtn img {
+  width: 180px;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 /* orbit container */

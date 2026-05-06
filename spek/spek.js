@@ -67,6 +67,13 @@ function updateUI() {
 }
 
 spekBtn.onclick = () => {
+
+  spekBtn.style.transform = "translate(-50%, -50%) scale(0.92)";
+
+  setTimeout(() => {
+    spekBtn.style.transform = "translate(-50%, -50%) scale(1)";
+  }, 100);
+
   spek++;
 
   clickSound.currentTime = 0;
