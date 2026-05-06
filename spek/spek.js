@@ -30,6 +30,7 @@ let spekPerSecond = 0;
 let orbitCount = 0;
 let gameLoaded = false;
 let currentSkin = "default";
+let ownedSkins = ["default"];
 
 const skins = {
   default: {
@@ -77,21 +78,23 @@ function updateSkinLocks() {
   document.querySelectorAll(".skin-btn").forEach(btn => {
 
     const skin = btn.dataset.skin;
+
     const required = skins[skin].unlock;
 
-    if (spek >= required) {
+    // gekocht
+    if (ownedSkins.includes(skin)) {
 
       btn.classList.remove("locked");
 
       btn.textContent =
-        `${skin.charAt(0).toUpperCase() + skin.slice(1)}`;
+        skin.charAt(0).toUpperCase() + skin.slice(1);
 
     } else {
 
       btn.classList.add("locked");
 
       btn.textContent =
-        `${skin.charAt(0).toUpperCase() + skin.slice(1)} 🔒 (${required.toLocaleString()})`;
+        `${skin.charAt(0).toUpperCase() + skin.slice(1)} 🔒 (${required})`;
 
     }
 
@@ -113,7 +116,7 @@ function showAlert(title, text) {
 }
 
 function isSkinUnlocked(skin) {
-  return spek >= skins[skin].unlock;
+  return ownedSkins.includes(skin);
 }
 
 const buySound = new Audio("buy.mp3");
@@ -406,6 +409,7 @@ await setDoc(doc(db, "players", playerName), {
   spek: spek,
   sps: spekPerSecond,
   currentSkin: currentSkin,
+  ownedSkins: ownedSkins,
 
     upgrades: upgrades.map(u => ({
       owned: u.owned,
@@ -423,7 +427,7 @@ async function loadCloudSave() {
 if (docSnap.exists()) {
   const data = docSnap.data();
 
-  currentSkin = data.currentSkin || "default";
+  ownedSkins = data.ownedSkins || ["default"];
 
     spek = data.spek || 0;
     spekPerSecond = data.sps || 0;
@@ -470,25 +474,49 @@ document.querySelectorAll(".skin-btn").forEach(btn => {
 
   const skin = btn.dataset.skin;
 
-  btn.onclick = async () => {
+btn.onclick = async () => {
 
-    if (!isSkinUnlocked(skin)) {
-
-      const required = skins[skin].unlock;
-
-      showAlert(
-        "🔒 Skin locked",
-        `Nog ${required - spek} spek nodig`
-      );
-
-      return;
-    }
+  // al gekocht = equippen
+  if (ownedSkins.includes(skin)) {
 
     currentSkin = skin;
 
     applySkin();
 
     await saveToLeaderboard();
-  };
+
+    return;
+  }
+
+  const price = skins[skin].unlock;
+
+  // niet genoeg spek
+  if (spek < price) {
+
+    showAlert(
+      "🔒 Niet genoeg spek",
+      `Nog ${price - spek} spek nodig`
+    );
+
+    return;
+  }
+
+  // kopen
+  spek -= price;
+
+  ownedSkins.push(skin);
+
+  currentSkin = skin;
+
+  updateUI();
+  applySkin();
+
+  showAlert(
+    "🔥 Skin gekocht",
+    `${skin} unlocked`
+  );
+
+  await saveToLeaderboard();
+};
 
 });
