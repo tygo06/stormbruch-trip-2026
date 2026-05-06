@@ -72,7 +72,7 @@ function applySkin() {
   });
 
 }
-function updateSkinLocks() {function updateSkinLocks() {
+function updateSkinLocks() {
 
   document.querySelectorAll(".skin-btn").forEach(btn => {
 
@@ -492,18 +492,3 @@ document.querySelectorAll(".skin-btn").forEach(btn => {
   };
 
 });
-
-    if (!isSkinUnlocked(skin)) {
-      showAlert(
-  "🔒 Skin locked",
-  `Nog ${required - spek} spek nodig`
-);
-      return;
-    }
-
-    currentSkin = skin;
-
-    applySkin();
-
-    await saveToLeaderboard();
-  };
