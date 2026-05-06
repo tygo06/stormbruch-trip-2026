@@ -5,7 +5,8 @@ import {
   setDoc,
   getDoc,
   onSnapshot,
-  collection
+  collection,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
@@ -380,7 +381,11 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-onSnapshot(collection(db, "players"), (snapshot) => {
+async function loadLeaderboard() {
+
+  const snapshot =
+    await getDocs(collection(db, "players"));
+
   const players = [];
 
   snapshot.forEach(doc => {
@@ -393,7 +398,19 @@ onSnapshot(collection(db, "players"), (snapshot) => {
   players.sort((a, b) => b.spek - a.spek);
 
   renderLeaderboard(players);
-});
+}
+  const players = [];
+
+  snapshot.forEach(doc => {
+    players.push({
+      name: doc.id,
+      ...doc.data()
+    });
+  });
+
+  players.sort((a, b) => b.spek - a.spek);
+
+  renderLeaderboard(players);
 
 function renderLeaderboard(players) {
   const el = document.getElementById("leaderboard");
@@ -545,27 +562,23 @@ document.getElementById("confirmReset").onclick = async () => {
   });
 
   // firebase reset
+try {
+
   await setDoc(doc(db, "players", playerName), {
     spek: 0,
     sps: 0,
     updated: Date.now()
   });
 
-  // local reset
-  localStorage.removeItem("save");
-
-  updateUI();
-  renderShop();
-  renderInventory();
-
-  location.reload();
-};
+} catch (err) {
+  console.log(err);
+}
 
 setInterval(() => {
   if (!gameLoaded) return; // 🔥 dit fixt je probleem
 
   saveToLeaderboard();
-}, 30000);
+}, 120000);
 
 async function saveToLeaderboard() {
   if (spek <= 0) return;
@@ -658,3 +671,9 @@ document
     skinsMenu.classList.remove("active");
 
 };
+
+loadLeaderboard();
+
+setInterval(() => {
+  loadLeaderboard();
+}, 15000)};
