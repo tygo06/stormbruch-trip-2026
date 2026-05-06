@@ -39,7 +39,7 @@ const skins = {
 
   gold: {
     image: "img/skins/bacon-gold.png",
-    unlock: 10000
+    unlock: 10
   },
 
   burned: {
