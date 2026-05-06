@@ -570,7 +570,7 @@ setInterval(() => {
   if (!gameLoaded) return; // 🔥 dit fixt je probleem
 
   saveToLeaderboard();
-}, 2000);
+}, 10000);
 
 async function saveToLeaderboard() {
   if (spek <= 0) return;
