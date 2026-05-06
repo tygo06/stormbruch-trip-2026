@@ -666,6 +666,12 @@ document
 
 };
 
+loadLeaderboard();
+
+setInterval(() => {
+  loadLeaderboard();
+}, 15000);
+
 setInterval(() => {
 
   if (!gameLoaded) return;
