@@ -72,7 +72,7 @@ function applySkin() {
   });
 
 }
-function updateSkinLocks() {
+function updateSkinLocks() {function updateSkinLocks() {
 
   document.querySelectorAll(".skin-btn").forEach(btn => {
 
@@ -83,14 +83,15 @@ function updateSkinLocks() {
 
       btn.classList.remove("locked");
 
+      btn.textContent =
+        `${skin.charAt(0).toUpperCase() + skin.slice(1)}`;
+
     } else {
 
       btn.classList.add("locked");
 
-      if (required > 0) {
-        btn.textContent =
-          `${skin.charAt(0).toUpperCase() + skin.slice(1)} 🔒 (${required.toLocaleString()})`;
-      }
+      btn.textContent =
+        `${skin.charAt(0).toUpperCase() + skin.slice(1)} 🔒 (${required.toLocaleString()})`;
 
     }
 
@@ -469,13 +470,28 @@ document.querySelectorAll(".skin-btn").forEach(btn => {
 
   const skin = btn.dataset.skin;
 
-  const required = skins[skin].unlock;
-
-  if (required > 0) {
-    btn.textContent += ` (${required.toLocaleString()})`;
-  }
-
   btn.onclick = async () => {
+
+    if (!isSkinUnlocked(skin)) {
+
+      const required = skins[skin].unlock;
+
+      showAlert(
+        "🔒 Skin locked",
+        `Nog ${required - spek} spek nodig`
+      );
+
+      return;
+    }
+
+    currentSkin = skin;
+
+    applySkin();
+
+    await saveToLeaderboard();
+  };
+
+});
 
     if (!isSkinUnlocked(skin)) {
       showAlert(
@@ -491,4 +507,3 @@ document.querySelectorAll(".skin-btn").forEach(btn => {
 
     await saveToLeaderboard();
   };
-});
