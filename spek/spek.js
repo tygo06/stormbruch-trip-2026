@@ -29,13 +29,25 @@ let spek = 0;
 let spekPerSecond = 0;
 let orbitCount = 0;
 let gameLoaded = false;
+let currentSkin = "gold";
+
+const skins = {
+  default: "img/skins/bacon-default.png",
+  gold: "img/skins/bacon-gold.png",
+  burned: "img/skins/bacon-burned.png"
+};
+let currentSkin = "default";
 
 const spekEl = document.getElementById("spekCount");
 const spsEl = document.getElementById("sps");
 const spekBtn = document.getElementById("spekBtn");
+const mainBacon = document.getElementById("mainBacon");
 const clickSound = new Audio("click.mp3");
 
 clickSound.volume = 0.3;
+function applySkin() {
+  mainBacon.src = skins[currentSkin];
+}
 
 const buySound = new Audio("buy.mp3");
 buySound.volume = 0.4;
@@ -376,3 +388,4 @@ setInterval(() => {
 renderShop();
 renderInventory();
 updateUI();
+applySkin();
