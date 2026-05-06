@@ -235,6 +235,13 @@ body {
   -webkit-user-drag: none;
 }
 
+.orbit-bacon {
+  width: 42px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 /* orbit container */
 .orbit {
   position: absolute;

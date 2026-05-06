@@ -216,8 +216,9 @@ function spawnOrbit(radius = 80, speed = 1) {
   const orbit = document.createElement("div");
   orbit.className = "orbit";
 
-  const el = document.createElement("span");
-  el.textContent = "🥓";
+const el = document.createElement("img");
+el.src = "img/bacon.png";
+el.className = "orbit-bacon";
 
   orbit.appendChild(el);
   wrapper.appendChild(orbit);
