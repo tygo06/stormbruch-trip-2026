@@ -389,28 +389,19 @@ async function loadLeaderboard() {
   const players = [];
 
   snapshot.forEach(doc => {
+
     players.push({
       name: doc.id,
       ...doc.data()
     });
+
   });
 
   players.sort((a, b) => b.spek - a.spek);
 
   renderLeaderboard(players);
+
 }
-  const players = [];
-
-  snapshot.forEach(doc => {
-    players.push({
-      name: doc.id,
-      ...doc.data()
-    });
-  });
-
-  players.sort((a, b) => b.spek - a.spek);
-
-  renderLeaderboard(players);
 
 function renderLeaderboard(players) {
   const el = document.getElementById("leaderboard");
@@ -439,6 +430,7 @@ function renderLeaderboard(players) {
     el.appendChild(div);
   });
 }
+
 
 
 
@@ -571,14 +563,16 @@ try {
   });
 
 } catch (err) {
+
   console.log(err);
+
 }
 
-setInterval(() => {
-  if (!gameLoaded) return; // 🔥 dit fixt je probleem
+location.reload();
 
-  saveToLeaderboard();
-}, 120000);
+};
+
+
 
 async function saveToLeaderboard() {
   if (spek <= 0) return;
@@ -672,8 +666,10 @@ document
 
 };
 
-loadLeaderboard();
-
 setInterval(() => {
-  loadLeaderboard();
-}, 15000)};
+
+  if (!gameLoaded) return;
+
+  saveToLeaderboard();
+
+}, 120000);
