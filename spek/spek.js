@@ -32,9 +32,20 @@ let gameLoaded = false;
 let currentSkin = "default";
 
 const skins = {
-  default: "img/skins/bacon-default.png",
-  gold: "img/skins/bacon-gold.png",
-  burned: "img/skins/bacon-burned.png"
+  default: {
+    image: "img/skins/bacon-default.png",
+    unlock: 0
+  },
+
+  gold: {
+    image: "img/skins/bacon-gold.png",
+    unlock: 10
+  },
+
+  burned: {
+    image: "img/skins/bacon-burned.png",
+    unlock: 50000
+  }
 };
 
 const spekEl = document.getElementById("spekCount");
@@ -45,7 +56,7 @@ const clickSound = new Audio("click.mp3");
 
 clickSound.volume = 0.3;
 function applySkin() {
-  mainBacon.src = skins[currentSkin];
+  mainBacon.src = skins[currentSkin].image;
 
   document.querySelectorAll(".skin-btn").forEach(btn => {
     btn.classList.remove("active");
@@ -54,6 +65,10 @@ function applySkin() {
       btn.classList.add("active");
     }
   });
+}
+
+function isSkinUnlocked(skin) {
+  return spek >= skins[skin].unlock;
 }
 
 const buySound = new Audio("buy.mp3");
@@ -402,9 +417,23 @@ updateUI();
 applySkin();
 
 document.querySelectorAll(".skin-btn").forEach(btn => {
+
+  const skin = btn.dataset.skin;
+
+  const required = skins[skin].unlock;
+
+  if (required > 0) {
+    btn.textContent += ` (${required.toLocaleString()})`;
+  }
+
   btn.onclick = async () => {
 
-    currentSkin = btn.dataset.skin;
+    if (!isSkinUnlocked(skin)) {
+      alert(`Nog locked! Nodig: ${required.toLocaleString()} spek`);
+      return;
+    }
+
+    currentSkin = skin;
 
     applySkin();
 
