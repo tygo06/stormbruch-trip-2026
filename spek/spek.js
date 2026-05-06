@@ -1,0 +1,366 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { 
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  onSnapshot,
+  collection
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCNUQezBo6Ppxb6vq8FYGbuLObrpaFuIhE",
+  authDomain: "stormbruchtrip.firebaseapp.com",
+  projectId: "stormbruchtrip",
+  storageBucket: "stormbruchtrip.firebasestorage.app",
+  messagingSenderId: "650327927334",
+  appId: "1:650327927334:web:e9e160e51028cdc40c14e7",
+  measurementId: "G-82N93VPX5Q"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+let playerName = "unknown";
+let spek = 0;
+let spekPerSecond = 0;
+let orbitCount = 0;
+let gameLoaded = false;
+
+const spekEl = document.getElementById("spekCount");
+const spsEl = document.getElementById("sps");
+const spekBtn = document.getElementById("spekBtn");
+const clickSound = new Audio("click.mp3");
+
+clickSound.volume = 0.3;
+
+const buySound = new Audio("buy.mp3");
+buySound.volume = 0.4;
+
+const upgrades = [
+  { name: "McDonalds", emoji: "🍟", sps: 1, cost: 50, owned: 0 },
+  { name: "KFC", emoji: "🍗", sps: 3, cost: 150, owned: 0 },
+  { name: "Roken", emoji: "🚬", sps: 6, cost: 400, owned: 0 },
+  { name: "Zuipen", emoji: "🍺", sps: 12, cost: 900, owned: 0 },
+  { name: "Skaten", emoji: "🛹", sps: 20, cost: 2000, owned: 0 },
+
+  { name: "Koud", emoji: "🧊", sps: 35, cost: 4000, owned: 0 },
+{ name: "Volkspark", emoji: "🌳", sps: 60, cost: 9000, owned: 0 },
+{ name: "Starbucks", emoji: "☕", sps: 90, cost: 14000, owned: 0 },
+{ name: "Enschede", emoji: "🏙️", sps: 120, cost: 20000, owned: 0 },
+
+  { name: "Autisme", emoji: "🧠", sps: 300, cost: 60000, owned: 0 },
+  { name: "Meneer Wissink", emoji: "🧓", sps: 1000, cost: 150000, owned: 0 },
+
+  // 🔥 ENDGAME
+  { name: "Afterparty", emoji: "🎉", sps: 2500, cost: 400000, owned: 0 },
+  { name: "Festival Mode", emoji: "🎪", sps: 6000, cost: 1000000, owned: 0 },
+  { name: "Spek God", emoji: "👑", sps: 15000, cost: 3000000, owned: 0 }
+];
+
+function updateUI() {
+  spekEl.textContent = spek;
+  spsEl.textContent = spekPerSecond;
+}
+
+spekBtn.onclick = () => {
+  spek++;
+
+  clickSound.currentTime = 0;
+  clickSound.play();
+
+  const pop = document.createElement("div");
+  pop.textContent = "+1";
+  pop.style.position = "absolute";
+  pop.style.color = "#2dd4bf";
+  pop.style.fontWeight = "bold";
+  pop.style.left = "50%";
+  pop.style.top = "50%";
+  pop.style.transform = "translate(-50%, -50%)";
+  pop.style.animation = "floatUp 0.6s ease forwards";
+
+  document.querySelector(".spek-wrapper").appendChild(pop);
+
+  setTimeout(() => pop.remove(), 500);
+
+  updateUI();
+};
+// SHOP
+function renderShop() {
+  const shop = document.getElementById("shop");
+  const shopPanel = document.getElementById("shopPanelContent");
+
+  shop.innerHTML = "";
+  shopPanel.innerHTML = "";
+
+  upgrades.forEach((u, i) => {
+    const item = createShopItem(u, i);
+    shop.appendChild(item);
+
+    const item2 = createShopItem(u, i);
+    shopPanel.appendChild(item2);
+  });
+}
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    playerName =
+      user.displayName ||
+      user.email.split("@")[0];
+
+    loadCloudSave();
+  }
+});
+
+
+setInterval(() => {
+  saveToLeaderboard();
+}, 2000);
+
+onSnapshot(collection(db, "players"), (snapshot) => {
+  const players = [];
+
+  snapshot.forEach(doc => {
+    players.push({
+      name: doc.id,
+      ...doc.data()
+    });
+  });
+
+  players.sort((a, b) => b.spek - a.spek);
+
+  renderLeaderboard(players);
+});
+
+function renderLeaderboard(players) {
+  const el = document.getElementById("leaderboard");
+
+  el.innerHTML = `
+    <div class="leaderboard-title">🏆 Leaderboard</div>
+  `;
+
+  players.forEach((p, i) => {
+    const div = document.createElement("div");
+    div.className = "leaderboard-item";
+
+    const crown = i === 0 ? "👑 " : "";
+
+    div.innerHTML = `
+      <span>${crown}${i + 1}. ${p.name}</span>
+      <span>${p.spek}</span>
+    `;
+
+    // 👇 jouw naam highlight
+    if (p.name === playerName) {
+      div.style.background = "rgba(45, 212, 191, 0.2)";
+      div.style.borderRadius = "6px";
+    }
+
+    el.appendChild(div);
+  });
+}
+
+
+
+function createShopItem(u, i) {
+  const div = document.createElement("div");
+  div.className = "shop-item";
+
+  div.innerHTML = `
+    <span>${u.emoji} ${u.name}</span>
+    <button class="shop-buy">${u.cost}</button>
+  `;
+
+  div.querySelector("button").onclick = () => buyUpgrade(i);
+
+  return div;
+}
+
+// BUY
+function buyUpgrade(i) {
+  const u = upgrades[i];
+
+  if (spek >= u.cost) {
+    spek -= u.cost;
+
+const s = new Audio("buy.mp3");
+s.volume = 0.4;
+s.play();
+
+    u.owned++;
+    orbitCount++;
+    spekPerSecond += u.sps;
+
+    u.cost = Math.floor(u.cost * (1.25 + u.owned * 0.02));
+
+    spawnOrbit(60 + orbitCount * 3, 0.5 + orbitCount * 0.05);
+
+    renderShop();
+    renderInventory();
+    updateUI();
+  }
+}
+function spawnOrbit(radius = 80, speed = 1) {
+  const wrapper = document.querySelector(".spek-wrapper");
+
+  const orbit = document.createElement("div");
+  orbit.className = "orbit";
+
+  const el = document.createElement("span");
+  el.textContent = "🥓";
+
+  orbit.appendChild(el);
+  wrapper.appendChild(orbit);
+
+  let angle = Math.random() * 360;
+
+  function animate() {
+    angle += speed;
+
+    orbit.style.transform =
+      `translate(-50%, -50%) rotate(${angle}deg) translateX(${radius}px)`;
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+}
+
+
+// INVENTORY
+function renderInventory() {
+  const inv = document.getElementById("inventory");
+  const invPanel = document.getElementById("inventoryPanelContent");
+
+  inv.innerHTML = "";
+  invPanel.innerHTML = "";
+
+  upgrades.forEach(u => {
+    const div = document.createElement("div");
+    div.className = "inventory-item";
+    div.innerHTML = `${u.emoji} ${u.name} <span>x${u.owned}</span>`;
+
+    inv.appendChild(div);
+    invPanel.appendChild(div.cloneNode(true));
+  });
+}
+
+// PANELS
+window.openPanel = function(type) {
+  closePanels();
+  document.getElementById(type + "Panel").classList.add("active");
+}
+
+window.closePanels = function() {
+  document.getElementById("inventoryPanel").classList.remove("active");
+  document.getElementById("shopPanel").classList.remove("active");
+}
+
+const resetBtn = document.getElementById("resetGame");
+const modal = document.getElementById("resetModal");
+
+resetBtn.onclick = () => {
+  modal.classList.add("active");
+};
+
+document.getElementById("cancelReset").onclick = () => {
+  modal.classList.remove("active");
+};
+
+document.getElementById("confirmReset").onclick = async () => {
+
+  // reset waardes
+  spek = 0;
+  spekPerSecond = 0;
+  orbitCount = 0;
+
+  upgrades.forEach(u => {
+    u.owned = 0;
+  });
+
+  // firebase reset
+  await setDoc(doc(db, "players", playerName), {
+    spek: 0,
+    sps: 0,
+    updated: Date.now()
+  });
+
+  // local reset
+  localStorage.removeItem("save");
+
+  updateUI();
+  renderShop();
+  renderInventory();
+
+  location.reload();
+};
+
+setInterval(() => {
+  if (!gameLoaded) return; // 🔥 dit fixt je probleem
+
+  saveToLeaderboard();
+}, 2000);
+
+async function saveToLeaderboard() {
+  if (spek <= 0) return;
+
+  await setDoc(doc(db, "players", playerName), {
+    spek: spek,
+    sps: spekPerSecond,
+    orbitCount: orbitCount,
+
+    upgrades: upgrades.map(u => ({
+      owned: u.owned,
+      cost: u.cost
+    })),
+
+    updated: Date.now()
+  });
+}
+
+async function loadCloudSave() {
+  const docRef = doc(db, "players", playerName);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+
+    spek = data.spek || 0;
+    spekPerSecond = data.sps || 0;
+    orbitCount = data.orbitCount || 0;
+
+    if (data.upgrades) {
+      data.upgrades.forEach((saved, i) => {
+        upgrades[i].owned = saved.owned;
+        upgrades[i].cost = saved.cost;
+      });
+    }
+  }
+
+  for (let i = 0; i < orbitCount; i++) {
+    spawnOrbit(60 + i * 3, 0.5 + i * 0.05);
+  }
+
+  updateUI();
+  renderShop();
+  renderInventory();
+
+  gameLoaded = true;
+}
+
+for (let i = 0; i < orbitCount; i++) {
+  spawnOrbit(60 + i * 3, 0.5 + i * 0.05);
+}
+// LOOP
+setInterval(() => {
+  spek += spekPerSecond;
+  updateUI();
+}, 1000);
+
+// INIT
+renderShop();
+renderInventory();
+updateUI();

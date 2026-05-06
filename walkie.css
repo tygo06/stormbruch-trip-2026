@@ -1,0 +1,109 @@
+body {
+  background: #0c1114;
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* 📻 RADIO BODY */
+.radio-app {
+  background: #1a1f24;
+  border-radius: 20px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+/* 📺 SCREEN */
+.radio-screen {
+  background: #050a0c;
+  color: #00ff9c;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* 📊 VISUALIZER */
+.visualizer {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 10px;
+  height: 30px;
+}
+
+.visualizer div {
+  width: 4px;
+  height: 10px;
+  background: #00ff9c;
+  transition: height 0.1s;
+}
+
+/* 🎛️ CONTROLS */
+.radio-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+select, button {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+}
+
+/* 🎤 TALK BUTTON */
+#talkBtn {
+  background: #222;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* 🔥 ACTIVE STATE */
+#talkBtn.active {
+  background: #00ff9c;
+  color: black;
+  transform: scale(1.05);
+}
+
+/* 🟢 SPEAKING GLOW */
+.speaking {
+  box-shadow: 0 0 20px #00ff9c;
+}
+
+.visualizer div {
+  width: 5px;
+  height: 6px;
+  background: #00ff9c;
+  border-radius: 2px;
+  transition: height 0.08s ease;
+}
+
+/* glow als iemand praat */
+.radio-app.speaking {
+  box-shadow: 0 0 30px #00ff9c;
+}
+
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: #1a1f24;
+  color: #00ff9c;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 1000;
+  transition: 0.2s;
+}
+
+.back-button:hover {
+  background: #00ff9c;
+  color: black;
+}

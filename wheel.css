@@ -1,0 +1,117 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f1115;
+  color: white;
+}
+
+.container {
+  text-align: center;
+  padding: 40px;
+}
+
+/* WHEEL */
+
+.wheel-container {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  margin: 40px auto;
+}
+
+#wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+
+  background: conic-gradient(
+    #1f2228 0deg 45deg,
+    #1a1d22 45deg 90deg,
+    #1f2228 90deg 135deg,
+    #1a1d22 135deg 180deg,
+    #1f2228 180deg 225deg,
+    #1a1d22 225deg 270deg,
+    #1f2228 270deg 315deg,
+    #1a1d22 315deg 360deg
+  );
+
+  border: 6px solid #2a2f38;
+
+  box-shadow:
+    inset 0 0 30px rgba(0,0,0,0.6),
+    0 0 20px rgba(0,0,0,0.4);
+
+  transition: transform 4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+#labels {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+/* TEXT OP HET RAD */
+.label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  text-shadow: 0 0 6px rgba(0,0,0,0.8);
+}
+
+/* POINTER */
+#pointer {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 26px;
+  color: #ff4757;
+
+  text-shadow: 0 0 10px rgba(255, 71, 87, 0.8);
+}
+
+/* CENTER KNOP */
+#center {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  background: #1f2228;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+
+  box-shadow:
+    inset 0 0 10px rgba(0,0,0,0.6),
+    0 0 10px rgba(0,0,0,0.4);
+}
+
+/* BUTTON */
+button {
+  margin-top: 20px;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 12px;
+  background: #1f2228;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #2a2f38;
+}
+
+/* RESULT */
+#result {
+  margin-top: 25px;
+  font-size: 20px;
+  opacity: 0.9;
+}

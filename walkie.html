@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Walkie Talkie</title>
+  <link rel="stylesheet" href="walkie.css" />
+</head>
+<body>
+
+<!-- 🔊 AUDIO -->
+<audio id="radioStart" src="walkie-talkie-beep-sound-effect-made-with-Voicemod.mp3"></audio>
+<audio id="radioEnd" src="walkie-talkie-beep-sound-effect-made-with-Voicemod.mp3"></audio>
+
+<button id="backBtn" class="back-button">⬅ Terug</button>
+
+<!-- 📻 WALKIE UI -->
+<div class="radio-app">
+
+  <!-- 📺 SCREEN -->
+  <div class="radio-screen">
+    <div id="status">Niet verbonden</div>
+    <div id="speaker">🔇 Niemand praat</div>
+
+    <!-- 🔥 VISUALIZER -->
+    <div id="visualizer" class="visualizer">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- 🎛️ CONTROLS -->
+  <div class="radio-controls">
+
+    <select id="userSelect">
+      <option value="tygo">Tygo</option>
+      <option value="jurjen">Jurjen</option>
+      <option value="nario">Nario</option>
+    </select>
+
+    <button id="connectBtn">🔌 Connect</button>
+
+    <button id="talkBtn" disabled>
+      🎤 HOLD TO TALK
+    </button>
+
+  </div>
+
+</div>
+
+<!-- 🔌 SCRIPTS -->
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script src="walkie.js"></script>
+
+</body>
+</html>

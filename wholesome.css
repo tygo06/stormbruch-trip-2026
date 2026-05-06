@@ -1,0 +1,68 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #111827;
+  color: white;
+  text-align: center;
+}
+
+/* topbar */
+.topbar {
+  padding: 15px;
+}
+
+button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+/* main */
+main {
+  padding: 20px;
+}
+
+h1 {
+  font-size: clamp(2rem, 6vw, 3rem);
+}
+
+/* muziek knop */
+#playBtn {
+  margin: 20px 0;
+  background: #2dd4bf;
+  color: black;
+}
+
+/* slider */
+.slider {
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+.track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: scroll 20s linear infinite;
+}
+
+.track img {
+  width: clamp(140px, 25vw, 240px);
+  height: clamp(100px, 18vw, 160px);
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* animation */
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* 📱 mobiel fix */
+@media (max-width: 768px) {
+  .track {
+    animation-duration: 12s;
+  }
+}

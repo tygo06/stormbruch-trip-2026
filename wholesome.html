@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Rustig maar 😌</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="wholesome.css">
+</head>
+<body>
+
+<div class="topbar">
+  <button onclick="window.location.href='index.html'">← Terug</button>
+</div>
+
+<main>
+  <h1>Rustig maar 🐶💖</h1>
+  <p>Alles is chill. Jij bent veilig.</p>
+
+  <button id="playBtn">🎵 Start muziek</button>
+
+  <audio id="music" loop>
+    <source src="Mickey Mouse Clubhouse  Hot Dog Dance   Disney Junior UK.mp3">
+  </audio>
+
+  <div class="slider">
+    <div class="track">
+      <!-- set -->
+      <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d">
+      <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131">
+      <img src="https://images.unsplash.com/photo-1507149833265-60c372daea22">
+      <img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8">
+      <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b">
+      <img src="https://images.unsplash.com/photo-1560807707-8cc77767d783">
+
+      <!-- duplicate = infinite scroll -->
+      <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d">
+      <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131">
+      <img src="https://images.unsplash.com/photo-1507149833265-60c372daea22">
+      <img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8">
+      <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b">
+      <img src="https://images.unsplash.com/photo-1560807707-8cc77767d783">
+    </div>
+  </div>
+
+</main>
+
+<script>
+const btn = document.getElementById("playBtn");
+const music = document.getElementById("music");
+
+btn.addEventListener("click", () => {
+  music.play();
+  btn.style.display = "none";
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camping Punishment Wheel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loader-card">
+      <div class="loader-wheel"></div>
+      <p>tent opzetten...</p>
+      <span>bier koud zetten • excuses voorbereiden • chaos kalibreren</span>
+    </div>
+  </div>
+
+  <div class="ambient">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <header class="app-header glass-panel">
+    <div>
+      <p class="eyebrow">Late night Germany trip</p>
+      <h1>Camping Punishment Wheel</h1>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="fullscreenBtn" title="Party fullscreen" aria-label="Party fullscreen">⛶</button>
+      <button class="icon-btn panic" id="panicBtn" title="Panic button" aria-label="Panic button">!</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="wheel-section glass-panel enter">
+      <div class="quote-row">
+        <span id="campingQuote">Geen kampvuur, wel karakterontwikkeling.</span>
+        <button class="ghost-btn" id="quoteBtn">nieuwe quote</button>
+      </div>
+
+      <div class="wheel-wrap" id="wheelWrap">
+        <div class="winner-orbit" id="winnerOrbit"></div>
+        <div class="pointer"></div>
+        <canvas id="wheelCanvas" width="720" height="720" aria-label="Draaiend straffenrad"></canvas>
+        <button class="spin-btn" id="spinBtn">
+          <strong>SPIN</strong>
+          <span>spatie</span>
+        </button>
+      </div>
+
+      <div class="mode-grid">
+        <label class="toggle-card">
+          <input type="checkbox" id="campingMode">
+          <span>Camping mode</span>
+        </label>
+        <label class="toggle-card">
+          <input type="checkbox" id="chaosMode">
+          <span>Chaos mode</span>
+        </label>
+        <button class="sound-btn" id="soundBtn">random soundboard</button>
+      </div>
+    </section>
+
+    <aside class="side-stack">
+      <section class="glass-panel panel enter delay-1">
+        <div class="panel-title">
+          <h2>Spelers</h2>
+          <button class="tiny-btn" id="randomPlayerBtn">random</button>
+        </div>
+        <form class="inline-form" id="playerForm">
+          <input id="playerName" type="text" maxlength="18" placeholder="Naam vriend">
+          <button type="submit">+</button>
+        </form>
+        <div class="players" id="playersList"></div>
+      </section>
+
+      <section class="glass-panel panel enter delay-2">
+        <div class="panel-title">
+          <h2>Eigen straf</h2>
+          <span class="pill" id="punishmentCount">0</span>
+        </div>
+        <form id="punishmentForm" class="punishment-form">
+          <input id="punishmentText" type="text" maxlength="90" placeholder="Nieuwe straf">
+          <select id="categorySelect"></select>
+          <button type="submit">Toevoegen</button>
+        </form>
+      </section>
+
+      <section class="glass-panel panel stats-panel enter delay-3">
+        <div class="panel-title">
+          <h2>Stats</h2>
+          <span class="pill" id="totalSpins">0 spins</span>
+        </div>
+        <div class="stats-grid">
+          <article><span>Top categorie</span><strong id="topCategory">-</strong></article>
+          <article><span>Streak</span><strong id="streak">-</strong></article>
+        </div>
+        <div class="loss-board" id="lossBoard"></div>
+      </section>
+    </aside>
+
+    <section class="bottom-grid">
+      <div class="glass-panel panel">
+        <div class="panel-title">
+          <h2>Laatste straffen</h2>
+          <button class="tiny-btn" id="clearHistoryBtn">clear</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </div>
+
+      <div class="glass-panel panel">
+        <div class="panel-title">
+          <h2>Achievements</h2>
+          <span class="pill" id="achievementCount">0</span>
+        </div>
+        <div class="achievements" id="achievements"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="sticky-actions glass-panel">
+    <button id="mobileSpinBtn">Spin wheel</button>
+    <button id="mobileRandomBtn">Random speler</button>
+  </nav>
+
+  <dialog class="result-modal" id="resultModal">
+    <div class="modal-card glass-panel">
+      <button class="close-modal" id="closeModal" aria-label="Sluiten">×</button>
+      <p class="eyebrow" id="resultCategory">Chaos</p>
+      <h2 id="resultPlayer">Naam</h2>
+      <p id="resultPunishment">Straf</p>
+      <div class="modal-actions">
+        <button id="spinAgainBtn">Nog een ronde</button>
+        <button class="ghost-btn" id="copyResultBtn">copy result</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast-stack" id="toastStack"></div>
+  <canvas class="confetti" id="confettiCanvas"></canvas>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

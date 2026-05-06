@@ -1,0 +1,168 @@
+/* BASIS SETTINGS */
+:root {
+  --primary-gradient: linear-gradient(135deg, #22c55e, #4ade80);
+  --bg-gradient: radial-gradient(circle at top, #1e293b, #020617);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.uno-page {
+  background: var(--bg-gradient);
+  color: white;
+  font-family: "Inter", sans-serif;
+  
+  min-height: 100vh;
+  /* Gebruik lvh/svh voor mobiele browsers (voorkomt verspringen door adresbalk) */
+  min-height: 100dvh; 
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.uno-container {
+  text-align: center;
+  width: 100%;
+  /* Op mobiel vullen we bijna het hele scherm, op desktop blijft het leesbaar */
+  max-width: 600px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80vh; /* Geeft de elementen ademruimte over de hele hoogte */
+}
+
+/* TITLE */
+.uno-container h1 {
+  font-size: clamp(28px, 8vw, 42px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  margin-top: 20px;
+}
+
+/* RESULT CARD */
+.result {
+  flex-grow: 1; /* Neemt beschikbare ruimte in */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  margin: 40px 0;
+  padding: 40px 25px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* CATEGORY LABEL */
+.category {
+  font-size: clamp(12px, 3vw, 16px);
+  opacity: 0.5;
+  letter-spacing: 4px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+/* PUNISHMENT TEXT */
+.punishment {
+  /* Nu echt groot in beeld */
+  font-size: clamp(32px, 10vw, 54px);
+  font-weight: 800;
+  line-height: 1.1;
+  word-wrap: break-word;
+}
+
+/* BUTTON */
+.main-btn {
+  width: 100%;
+  padding: 24px;
+  font-size: clamp(20px, 5vw, 24px);
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+
+  background: var(--primary-gradient);
+  color: #020617;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  box-shadow: 0 15px 35px rgba(34, 197, 94, 0.4);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  -webkit-tap-highlight-color: transparent;
+  margin-bottom: 20px;
+}
+
+/* INTERACTIE */
+.main-btn:active {
+  transform: scale(0.95);
+}
+
+/* FLASH ANIMATION */
+.result.flash {
+  animation: unoFlash 0.5s ease-out;
+}
+
+@keyframes unoFlash {
+  0%   { background: #ef4444; transform: scale(0.98); }
+  25%  { background: #facc15; }
+  50%  { background: #22c55e; }
+  75%  { background: #3b82f6; }
+  100% { background: rgba(255, 255, 255, 0.07); transform: scale(1); }
+}
+
+/* SPECIFIEK VOOR HELE KLEINE SCHERMEN */
+@media (max-height: 700px) {
+  .uno-container {
+    height: auto;
+  }
+  .result {
+    padding: 30px 20px;
+    margin: 20px 0;
+  }
+}
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: none;
+
+  background: rgba(255,255,255,0.08);
+  color: white;
+
+  font-size: 14px;
+  cursor: pointer;
+
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+}
+
+/* hover */
+.back-btn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-1px);
+}
+@media (max-width: 480px) {
+  .back-btn {
+    top: 12px;
+    left: 12px;
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+}

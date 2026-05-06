@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>🥓 Spek Clicker</title>
+  <link rel="stylesheet" href="spek.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+</head>
+<body>
+
+<button id="resetGame">🗑️ Reset</button>
+
+<div id="leaderboard" class="leaderboard"></div>
+
+<div class="game-container">
+
+  <div class="sidebar">
+    <h2>📊 Inventory</h2>
+    <div id="inventory"></div>
+  </div>
+
+  <div class="main">
+    <div class="spek-wrapper">
+      <div id="spekBtn">🥓</div>
+    </div>
+
+    <h1>Spek: <span id="spekCount">0</span></h1>
+    <p>⚡ <span id="sps">0</span>/sec</p>
+  </div>
+
+  <div class="shop">
+    <h2>🛒 Shop</h2>
+    <div id="shop"></div>
+  </div>
+
+</div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-ui">
+  <button onclick="openPanel('inventory')">📊</button>
+  <button onclick="openPanel('shop')">🛒</button>
+</div>
+
+<!-- PANELS -->
+<div id="inventoryPanel" class="panel">
+  <button class="close" onclick="closePanels()">✖</button>
+  <h2>📊 Inventory</h2>
+  <div id="inventoryPanelContent"></div>
+</div>
+
+<div id="shopPanel" class="panel">
+  <button class="close" onclick="closePanels()">✖</button>
+  <h2>🛒 Shop</h2>
+  <div id="shopPanelContent"></div>
+</div>
+
+<div id="resetModal" class="modal">
+  <div class="modal-box">
+    <h3>⚠️ Reset Game</h3>
+    <p>Weet je zeker dat je alles wilt resetten?<br>Je raakt ALLES kwijt.</p>
+
+    <div class="modal-actions">
+      <button id="confirmReset">Ja, reset</button>
+      <button id="cancelReset">Annuleren</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="spek.js"></script>
+</body>
+</html>

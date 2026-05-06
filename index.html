@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stormbruch Trip 2026</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0c1114">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stormbruch">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+</head>
+<body>
+
+<div id="splash">
+  <img src="icon-512.png" alt="logo" />
+  <h1>Stormbruch</h1>
+  <p>Loading the adventure...</p>
+</div>
+
+  <main id="app" class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Zomerarchief in aanbouw</p>
+        <h1>Stormbruch Trip 2026</h1>
+      </div>
+
+      <div class="topbar-actions">
+        <button id="currentProfileButton" class="profile-button" type="button">
+          <span id="currentProfileAvatar" class="profile-avatar-slot">?</span>
+          <span id="currentProfileName">Inloggen</span>
+        </button>
+
+        <button id="logoutButton" class="ghost-button hidden" type="button">
+          Uitloggen
+        </button>
+
+        <a href="https://bamischijf.netlify.app/" target="_blank" class="ghost-button">
+          Bamischijf
+        </a>
+
+                <a href="uno.html" target="_blank" class="ghost-button">
+          UNO Straf Generator
+        </a>
+
+        <button id="panicBtn" class="ghost-button">
+  😰 Ben je bang?
+</button>
+
+
+                <a href="walkie.html" target="_blank" class="ghost-button">
+          Walkie Talkie
+        </a>
+
+                        <a href="spek/spek.html" target="_blank" class="ghost-button">
+          Spek clicker
+        </a>
+
+        <button id="themeToggle" class="ghost-button" type="button">
+          🌙
+        </button>
+
+        <div class="mode-chip" id="modeBanner" aria-live="polite"></div>
+      </div>
+
+      <button id="openSettings">⚙️</button>
+    </header>
+
+    <section class="hero-panel">
+      <div>
+        <p id="modeKicker" class="eyebrow"></p>
+        <h2 id="modeTitle"></h2>
+        <p id="modeDescription"></p>
+      </div>
+      <button id="secretModeToggle" class="secret-mode-button" type="button" aria-label="Geheime modus wisselen"></button>
+    </section>
+
+    <section id="preTrip" class="mode-view hidden" aria-labelledby="planningTitle">
+      <div class="countdown-panel">
+        <p class="eyebrow">Aftellen</p>
+        <h2 id="planningTitle">Vertrekdag: 6 juli 2026</h2>
+        <div id="countdown" class="countdown-grid" aria-live="polite"></div>
+      </div>
+
+      <div class="dashboard-grid">
+        <section class="panel playlist-panel">
+          <div class="panel-heading">
+            <h2>Wie gaan er mee</h2>
+          </div>
+          <ul id="crewList" class="crew-list"></ul>
+
+          <div class="chat-box">
+
+  <div id="chatMessages" class="chat-messages"></div>
+
+  <form id="chatForm" class="chat-input">
+    <input id="chatInput" placeholder="Typ iets..." autocomplete="off" />
+    <div id="typingIndicator" class="typing-indicator"></div>
+    <button>Send</button>
+  </form>
+
+</div>
+        </section>
+        <section class="panel">
+  <div class="panel-heading">
+    <h2>Belangrijke info</h2>
+  </div>
+
+<div class="info-content">
+
+  <div class="info-card">
+    <div class="info-icon">📍</div>
+    <div>
+      <span class="info-label">Locatie</span>
+      <p>Trekkingpark Sauerland, Duitsland</p>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-icon">📅</div>
+    <div>
+      <span class="info-label">Datum</span>
+      <p>6 juli 2026 - 10 juli 2026</p>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-icon">🚗</div>
+    <div>
+      <span class="info-label">Verzamelen</span>
+      <p>We spreken af bij Enschede station.</p>
+    </div>
+  </div>
+
+    <div class="info-block">
+      <h3>🗺️ Kaart</h3>
+      <div class="map-container">
+<iframe src="https://www.google.com/maps/embed?pb=!1m13!1m8!1m3!1d1477.8992480241375!2d8.6780082!3d51.351115!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNTHCsDIxJzAyLjciTiA4wrA0MCc1My4wIkU!5e1!3m2!1sen!2smt!4v1777854154942!5m2!1sen!2smt" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <a 
+  href="https://www.google.com/maps/dir/?api=1&destination=51.351115,8.6780082" 
+  target="_blank" 
+  class="map-button"
+>
+  🚗 Open route in Google Maps
+</a>
+    </div>
+
+    <div id="weatherWidget" class="weather-widget">
+    <div id="weatherForecast" class="forecast"></div>
+  <div class="weather-main">
+    <div id="weatherIcon">⛅</div>
+    <div>
+      <div id="weatherTemp">--°C</div>
+      <div id="weatherDesc">laden...</div>
+    </div>
+  </div>
+
+  <div id="weatherMood" class="weather-mood"></div>
+</div>
+
+  </div>
+</section>
+
+        <section class="panel">
+          <div class="panel-heading">
+          <div class="pack-tabs">
+  <button id="tabShared" class="active">Gezamenlijk</button>
+  <button id="tabPrivate">Privé</button>
+</div>
+            <h2>Paklijst</h2>
+            <button id="clearPackedButton" class="ghost-button" type="button">Gedaan wissen</button>
+          </div>
+          <form id="packForm" class="inline-form">
+            <input id="packInput" type="text" placeholder="Voeg iets toe..." autocomplete="off" />
+            <button type="submit">Toevoegen</button>
+          </form>
+          <ul id="packList" class="check-list"></ul>
+        </section>
+        <section class="panel">
+  <div class="panel-heading">
+    <h2>🎧 Playlist</h2>
+    
+  </div>
+  <iframe 
+    style="border-radius:12px"
+    src="https://open.spotify.com/embed/playlist/1IwTuei3hKddsQvOi6NDUv"
+    width="100%" 
+    height="352"
+    frameborder="0"
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+    loading="lazy">
+  </iframe>
+  <div class="trip-stats" id="tripStats">
+  <div>📸 0 foto's</div>
+  <div>📝 0 posts</div>
+  <div>🎒 0 items</div>
+</div>
+
+<section class="panel">
+  <div class="panel-heading">
+    <h2>🗺️ Live locatie</h2>
+  </div>
+
+  <div id="map" class="map-live"></div>
+
+  <div class="map-settings">
+  <button id="openMapSettings" class="ghost-button">⚙️ Settings</button>
+
+  <div id="mapSettingsPanel" class="map-settings-panel hidden">
+    <label class="toggle-row">
+      <span>📍 Live locatie delen</span>
+      <input type="checkbox" id="locationToggle" />
+    </label>
+  </div>
+</div>
+<div class="map-users">
+  <h3>👥 Wie is waar</h3>
+  <div id="mapUserList"></div>
+</div>
+</section>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+</section>
+
+        <section class="panel gallery-panel">
+          <div class="panel-heading">
+            <h2>Memes / AI beelden</h2>
+            <button id="imageSelectToggle">Select</button>
+<button id="downloadImages" class="hidden">Download geselecteerd</button>
+            <button id="clearGalleryButton" class="ghost-button" type="button">Wissen</button>
+          </div>
+          <label class="upload-dropzone">
+            <input type="file" id="imageInput" accept="image/*" />
+            <span>Voeg een meme of AI beeld toe</span>
+          </label>
+          <div id="gallery" class="gallery-grid"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="tripMode" class="mode-view hidden" aria-labelledby="diaryTitle">
+      <div class="diary-layout">
+        <section class="panel post-composer">
+          <div class="panel-heading">
+            <h2 id="diaryTitle">Tripdagboek</h2>
+          </div>
+          <form id="postForm">
+            <textarea id="postText" placeholder="Wat is er vandaag gebeurd?" required></textarea>
+           <label class="upload-dropzone compact">
+  <input type="file" id="postImage" accept="image/*" />
+  <span>📸 Foto toevoegen</span>
+</label>
+
+<label class="upload-dropzone compact">
+  <input type="file" id="postVideo" accept="video/*" />
+  <span>🎥 Video toevoegen</span>
+</label>
+<div id="postPreview" class="post-preview"></div>
+            <button type="submit">Herinnering plaatsen</button>
+          </form>
+        </section>
+
+        <section class="timeline-wrap">
+          <div class="panel-heading">
+            <h2>Tijdlijn</h2>
+            <button id="clearPostsButton" class="ghost-button" type="button">Dagboek wissen</button>
+            <button id="selectToggle">Select</button>
+<button id="downloadSelected" class="hidden">Download geselecteerd</button>
+          </div>
+          <div id="timeline" class="timeline"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-label="Foto bekijken">
+    <div class="lightbox-panel">
+      <div class="lightbox-actions">
+        <a id="lightboxDownload" class="download-button" href="#" download>Downloaden</a>
+        <button id="lightboxClose" class="ghost-button" type="button">Sluiten</button>
+      </div>
+      <button id="prevBtn" class="lightbox-nav">←</button>
+<button id="nextBtn" class="lightbox-nav">→</button>
+      <img id="lightboxImage" alt="Vergrote upload" />
+      <p id="lightboxCaption" class="lightbox-caption"></p>
+    </div>
+  </div>
+
+  <div id="profileModal" class="profile-modal hidden" role="dialog" aria-modal="true" aria-label="Profiel">
+    <div class="profile-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Account koppelen</p>
+          <h2>Profiel gekoppeld</h2>
+        </div>
+      </div>
+      <div id="profileChoices" class="profile-choices"></div>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="profile-modal hidden">
+  <div class="profile-panel">
+    <h2>⚙️ Instellingen</h2>
+
+    <div class="auth-form">
+<div class="password-field">
+  <input id="currentPass" type="password" placeholder="Huidig wachtwoord">
+  <button type="button" class="toggle-pass">👁️</button>
+</div>
+
+<div class="password-field">
+  <input id="newPass" type="password" placeholder="Nieuw wachtwoord">
+  <button type="button" class="toggle-pass">👁️</button>
+</div>
+
+<div class="password-field">
+  <input id="confirmPass" type="password" placeholder="Bevestig wachtwoord">
+  <button type="button" class="toggle-pass">👁️</button>
+</div>
+
+      <div id="settingsError" class="form-error"></div>
+
+      <button id="savePassword">Wachtwoord wijzigen</button>
+    </div>
+  </div>
+</div>
+
+  <div id="authModal" class="profile-modal hidden" role="dialog" aria-modal="true" aria-label="Inloggen">
+    <div class="profile-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Stormbruch login</p>
+          <h2>Log in met je account</h2>
+        </div>
+      </div>
+<form id="authForm" class="auth-form">
+  <input id="authEmail" type="email" placeholder="Email" required />
+  
+  <input id="authPassword" type="password" placeholder="Wachtwoord" required />
+
+  <button type="button" id="forgotPassword" class="ghost-button small">
+    Wachtwoord vergeten?
+  </button>
+
+  <button type="submit">Inloggen</button>
+  
+  <p id="authError" class="form-error"></p>
+</form>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+  <div id="panicModal" class="panic-modal hidden">
+  <div class="panic-box">
+    <h2>Ben je echt heel bang? 😰</h2>
+    <p>Dit opent de ultra wholesome noodmodus.</p>
+
+    <div class="panic-actions">
+      <button id="panicYes">Ja 😭</button>
+      <button id="panicNo">Nee 😎</button>
+    </div>
+  </div>
+</div>
+
+<div id="itemModal" class="panic-modal hidden">
+  <div class="panic-box">
+
+    <h2>Item bewerken</h2>
+
+    <input id="itemName" type="text" placeholder="Naam" />
+
+    <textarea id="itemDesc" placeholder="Beschrijving"></textarea>
+
+    <div class="priority-buttons">
+      <button data-value="1">!</button>
+      <button data-value="2">!!</button>
+      <button data-value="3">!!!</button>
+    </div>
+
+    <div class="panic-actions">
+      <button id="saveItem">Opslaan</button>
+      <button id="cancelItem">Annuleren</button>
+    </div>
+
+  </div>
+</div>
+<div id="ami">
+  <div class="ami-body">
+    <div class="ami-ear left"></div>
+    <div class="ami-ear right"></div>
+    <div class="ami-face">
+      <div class="ami-eyes"></div>
+      <div class="ami-mouth"></div>
+    </div>
+    <div class="ami-tail"></div>
+  </div>
+
+  <div id="amiSpeech" class="ami-speech hidden"></div>
+  
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
