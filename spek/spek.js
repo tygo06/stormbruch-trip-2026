@@ -36,7 +36,6 @@ const skins = {
   gold: "img/skins/bacon-gold.png",
   burned: "img/skins/bacon-burned.png"
 };
-let currentSkin = "default";
 
 const spekEl = document.getElementById("spekCount");
 const spsEl = document.getElementById("sps");
