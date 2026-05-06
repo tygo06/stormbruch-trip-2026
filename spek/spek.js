@@ -39,7 +39,7 @@ const skins = {
 
   gold: {
     image: "img/skins/bacon-gold.png",
-    unlock: 10
+    unlock: 10000
   },
 
   burned: {
@@ -65,6 +65,22 @@ function applySkin() {
       btn.classList.add("active");
     }
   });
+}
+
+function updateSkinLocks() {
+
+  document.querySelectorAll(".skin-btn").forEach(btn => {
+
+    const required = Number(btn.dataset.required || 0);
+
+    if (spek >= required) {
+      btn.classList.remove("locked");
+    } else {
+      btn.classList.add("locked");
+    }
+
+  });
+
 }
 
 function isSkinUnlocked(skin) {
@@ -414,6 +430,7 @@ setInterval(() => {
 renderShop();
 renderInventory();
 updateUI();
+updateSkinLocks();
 applySkin();
 
 document.querySelectorAll(".skin-btn").forEach(btn => {

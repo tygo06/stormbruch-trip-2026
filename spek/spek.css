@@ -536,3 +536,13 @@ html, body {
   border-color: #2dd4bf;
   box-shadow: 0 0 12px rgba(45, 212, 191, 0.4);
 }
+
+.skin-btn.locked {
+  opacity: 0.4;
+  filter: grayscale(1);
+  cursor: not-allowed;
+}
+
+.skin-btn.locked:hover {
+  transform: none;
+}
