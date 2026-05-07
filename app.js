@@ -176,7 +176,6 @@ function setMode(date = new Date()) {
   }
 
   renderCountdown();
-  renderPosts();
 }
 
 async function trackVisit() {
@@ -1159,7 +1158,6 @@ renderCrew();
 renderProfileControls();
 renderPackingList();
 renderGallery();
-renderPosts();
 setMode(activeDate);
 onAuthStateChanged(auth, handleAuthState);
 
