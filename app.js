@@ -1262,19 +1262,6 @@ header.append(
   });
 }
 
-
-
-
-
-downloadBtn.addEventListener("click", () => {
-  selectedVideos.forEach((video) => {
-    const a = document.createElement("a");
-    a.href = video;
-    a.download = "video.mp4";
-    a.click();
-  });
-});
-
 async function updateItem(item, text, description, priority) {
   const collectionRef =
     packingMode === "shared"
