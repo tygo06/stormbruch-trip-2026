@@ -1046,11 +1046,11 @@ async function handleAuthState(user) {
     els.authModal.classList.remove("hidden");
     els.profileModal.classList.add("hidden");
 
-    renderCrew();
-    renderProfileControls();
-    renderPackingList();
-    renderGallery();
-    renderPosts();
+renderCrew();
+renderProfileControls();
+renderPackingList();
+renderGallery();
+setMode(activeDate);
 
     return;
   }
@@ -1078,6 +1078,17 @@ startFirestoreListeners();
 initChat({
   currentUser: () => currentUser,
   getCurrentProfile
+});
+
+initPosts({
+  currentUser: () => currentUser,
+  getCurrentProfile,
+  getAuthor,
+  getDisplayName,
+  createAvatar,
+  requireProfile,
+  openLightbox,
+  els
 });
 
 initMapSystem({
