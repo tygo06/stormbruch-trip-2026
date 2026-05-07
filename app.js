@@ -2168,7 +2168,6 @@ function renderStats() {
 trackVisit();
 
 initMap();
-startLocationTracking();
 
 const settingsBtn = document.getElementById("openMapSettings");
 const settingsPanel = document.getElementById("mapSettingsPanel");
