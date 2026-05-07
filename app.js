@@ -1,3 +1,5 @@
+import {auth, db } from "./firebase.js";
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import {
   getAuth,
@@ -21,252 +23,7 @@ import {
   increment 
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCNUQezBo6Ppxb6vq8FYGbuLObrpaFuIhE",
-  authDomain: "stormbruchtrip.firebaseapp.com",
-  projectId: "stormbruchtrip",
-  storageBucket: "stormbruchtrip.firebasestorage.app",
-  messagingSenderId: "650327927334",
-  appId: "1:650327927334:web:e9e160e51028cdc40c14e7",
-  measurementId: "G-82N93VPX5Q"
-};
 
-import {
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  updatePassword
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-
-import {
-  sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-
-import { serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-function startLocationTracking() {
-  if (!navigator.geolocation) return;
-
-  if (locationWatcher) return; // voorkomt dubbel starten
-
-  locationWatcher = navigator.geolocation.watchPosition(async (pos) => {
-    const { latitude, longitude } = pos.coords;
-
-    const profile = getCurrentProfile();
-    if (!profile) return;
-
-    await setDoc(doc(db, "locations", profile.id), {
-      lat: latitude,
-      lng: longitude,
-      updatedAt: new Date().toISOString()
-    });
-  });
-}
-
-function stopLocationTracking() {
-  if (locationWatcher !== null) {
-    navigator.geolocation.clearWatch(locationWatcher);
-    locationWatcher = null;
-  }
-}
-
-function setLocationEnabled(enabled) {
-  locationEnabled = enabled;
-  localStorage.setItem("locationEnabled", enabled);
-
-  if (enabled) {
-    startLocationTracking();
-  } else {
-    stopLocationTracking();
-  }
-}
-
-const toggle = document.getElementById("locationToggle");
-
-function getLastSeenText(updatedAt) {
-  const diff = Date.now() - new Date(updatedAt).getTime();
-
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(diff / 60000);
-  const hours = Math.floor(diff / 3600000);
-
-  if (seconds < 10) return "🟢 nu actief";
-  if (seconds < 60) return `🟢 ${seconds}s geleden`;
-  if (minutes < 60) return `🟡 ${minutes} min geleden`;
-  if (hours < 24) return `🟠 ${hours} uur geleden`;
-
-  return "🔴 lang geleden";
-}
-
-let map;
-let markers = {};
-
-function initMap() {
-  map = L.map("map").setView([51.35, 8.67], 13);
-
-
-L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-  attribution: "Tiles © Esri"
-}).addTo(map);
-
-onSnapshot(collection(db, "locations"), (snapshot) => {
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const id = doc.id;
-
-    liveLocations[id] = data;
-
-    const person = crew.find(p => p.id === id);
-    const avatar = getAvatarById(id);
-
-    if (markers[id]) {
-      markers[id].setLatLng([data.lat, data.lng]);
-      markers[id].setIcon(createAvatarIcon(avatar, person?.name || "?"));
-    } else {
-      markers[id] = L.marker(
-        [data.lat, data.lng],
-        { icon: createAvatarIcon(avatar, person?.name || "?") }
-      ).addTo(map);
-
-      markers[id].on("click", () => openUserCard(id, data));
-    }
-  });
-
-  // 🔥 HIER gebeurt de magie
-  renderMapUserList(liveLocations);
-});
-}
-
-
-
-
-
-window.addEventListener("load", () => {
-  const saved = localStorage.getItem("locationEnabled") === "true";
-
-  toggle.checked = saved;
-  setLocationEnabled(saved);
-});
-
-function renderMapUserList(locations) {
-  const container = document.getElementById("mapUserList");
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  Object.entries(locations).forEach(([id, data]) => {
-    const person = crew.find(p => p.id === id);
-    if (!person) return;
-
-    const lastSeenText = getLastSeenText(data.updatedAt);
-
-    const div = document.createElement("div");
-    div.className = "map-user";
-
-    const avatar = person.avatar
-      ? `<img src="${person.avatar}" />`
-      : `<div class="fallback">${person.name[0]}</div>`;
-
-    div.innerHTML = `
-      ${avatar}
-      <div>
-        <strong>${person.name}</strong><br>
-        <small>${lastSeenText}</small>
-      </div>
-    `;
-
-    div.addEventListener("click", () => {
-      const marker = markers[id];
-      if (!marker) return;
-
-      map.setView(marker.getLatLng(), 17, { animate: true });
-      openUserCard(id, data);
-    });
-
-    container.appendChild(div);
-  });
-}
-
-function openUserCard(id, data) {
-  const person = crew.find(p => p.id === id);
-  const lastSeen = new Date(data.updatedAt).toLocaleTimeString();
-
-  const card = document.createElement("div");
-  card.className = "map-card";
-
-  card.innerHTML = `
-    <div class="map-card-inner">
-      ${person?.avatar 
-  ? `<img src="${person.avatar}" />`
-  : `<div class="fallback">${person?.name?.[0] || "?"}</div>`
-}
-      <div>
-        <strong>${person?.name}</strong>
-        <div>📍 ${data.lat.toFixed(5)}, ${data.lng.toFixed(5)}</div>
-        <div>⏱️ laatst gezien: ${lastSeen}</div>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(card);
-
-  setTimeout(() => card.remove(), 4000);
-}
-
-function createAvatarIcon(avatarUrl, name = "?") {
-  const hasAvatar = avatarUrl && avatarUrl !== "null";
-
-  return L.divIcon({
-    className: "custom-marker",
-    html: hasAvatar
-      ? `
-        <div class="marker">
-          <img src="${avatarUrl}" />
-        </div>
-      `
-      : `
-        <div class="marker fallback">
-          ${name[0]}
-        </div>
-      `,
-    iconSize: [50, 50]
-  });
-}
-
-setInterval(() => {
-  if (typeof renderMapUserList === "function") {
-    renderMapUserList(liveLocations);
-  }
-}, 10000); // elke 10 sec refresh
-
-function getAvatarById(id) {
-  const person = crew.find(p => p.id === id);
-
-  // ✅ alleen echte user avatar gebruiken
-  if (person && person.avatar && person.avatar.trim() !== "") {
-    return person.avatar;
-  }
-
-  // ❌ GEEN fake avatar meer
-  return null;
-}
-
-function nextImage() {
-  if (!currentLightboxList.length) return;
-  currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxList.length;
-  updateLightbox();
-}
-
-function prevImage() {
-  if (!currentLightboxList.length) return;
-  currentLightboxIndex =
-    (currentLightboxIndex - 1 + currentLightboxList.length) % currentLightboxList.length;
-  updateLightbox();
-}
-
-const TRIP_START = new Date(2026, 6, 6);
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
 
 const paths = {
   packing: collection(db, "trips", "stormbruch-2026", "packing"),
@@ -482,7 +239,7 @@ savePasswordBtn.addEventListener("click", async () => {
       els.settingsModal.classList.add("hidden");
       errorEl.textContent = "";
       errorEl.style.color = "";
-    }, 1500);
+    }, 3000);
 
   } catch (err) {
     console.error(err);
@@ -942,7 +699,7 @@ amiSpeak("hmm...");
     authorId: profile.id,
     authorName: profile.name,
     authorAvatar: profile.avatar || "",
-    createdAt: new Date().toISOString()
+    createdAt: serverTimestamp()
   };
 
   if (packingMode === "shared") {
@@ -1126,7 +883,7 @@ async function addGalleryImage(file) {
     authorId: profile.id,
     authorName: profile.name,
     authorAvatar: profile.avatar || "",
-    createdAt: new Date().toISOString()
+    createdAt: serverTimestamp()
   });
   els.imageInput.value = "";
 }
@@ -1154,7 +911,7 @@ async function createPost(text, file, videoFile) {
     authorId: profile.id,
     authorName: profile.name,
     authorAvatar: profile.avatar || "",
-    createdAt: new Date().toISOString()
+    createdAt: serverTimestamp()
   });
 
   els.postForm.reset();
@@ -1332,7 +1089,7 @@ const typingRef = collection(db, "typing");
 
 let typingTimeout;
 
-chatInput.addEventListener("input", async () => {
+chatInput.addEventListener("input", debounce(async () => {
   const profile = getCurrentProfile();
   if (!profile) return;
 
@@ -1350,8 +1107,20 @@ chatInput.addEventListener("input", async () => {
       isTyping: false,
       name: profile.name
     });
-  }, 1500); // stopt na 1.5 sec niet typen
-});
+  }, 3000); // stopt na 1.5 sec niet typen
+  
+}, 500));
+function debounce(fn, delay) {
+  let timeout;
+
+  return (...args) => {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
 
 const messagesRef = collection(db, "messages");
 
