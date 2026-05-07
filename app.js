@@ -124,7 +124,6 @@ const TRIP_START = new Date(2026, 6, 6);
 let activeDate = new Date();
 let packingItems = [];
 let galleryImages = [];
-let posts = [];
 let crew = DEFAULT_CREW;
 let countdownTimer = null;
 let forcedTripMode = false;
@@ -137,23 +136,8 @@ let packingMode = "shared"; // "shared" | "private"
 let privatePackingItems = [];
 let editingItem = null;
 let selectedPriority = "1";
-let selectedVideos = new Set();
-let selectMode = false;
 let selectedImages = new Set();
 let imageSelectMode = false;
-
-const selectBtn = document.getElementById("selectToggle");
-const downloadBtn = document.getElementById("downloadSelected");
-
-// DAN PAS
-downloadBtn.addEventListener("click", () => {
-  selectedVideos.forEach((video) => {
-    const a = document.createElement("a");
-    a.href = video;
-    a.download = "video.mp4";
-    a.click();
-  });
-});
 
 function makeId() {
   if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") {
@@ -366,12 +350,6 @@ crew = DEFAULT_CREW.map((person) => {
     renderGallery();
     renderStats();
   }, showFirestoreError),
-
-    onSnapshot(query(paths.posts, orderBy("createdAt", "desc")), (snapshot) => {
-    posts = snapshot.docs.map((postDoc) => ({ id: postDoc.id, ...postDoc.data() }));
-    renderPosts();
-    renderStats();
-  }, showFirestoreError)
   ];
 
 }
@@ -911,137 +889,6 @@ async function addGalleryImage(file) {
   els.imageInput.value = "";
 }
 
-async function createPost(text, file, videoFile) {
-  const trimmed = text.trim();
-  if (!trimmed && !file && !videoFile) return;
-
-  const profile = requireProfile();
-  if (!profile) return;
-
-  const image = file ? await compressImage(file) : null;
-
-  let video = null;
-
-  if (videoFile) {
-    video = await compressVideo(videoFile); // 👈 nieuwe functie
-  }
-
-  await addDoc(paths.posts, {
-    text: trimmed,
-    image,
-    video,
-    authorUid: currentUser.uid,
-    authorId: profile.id,
-    authorName: profile.name,
-    authorAvatar: profile.avatar || "",
-    createdAt: serverTimestamp()
-  });
-
-  els.postForm.reset();
-}
-
-function compressVideo(file) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(file);
-  });
-}
-
-function renderPosts() {
-  els.timeline.innerHTML = "";
-
-  if (!posts.length) {
-    els.timeline.append(emptyState("Nog geen dagboekposts."));
-    return;
-  }
-
-  posts.forEach((post) => {
-    const card = document.createElement("article");
-    card.className = "post-card";
-
-    const author = getAuthor(
-      post.authorId,
-      post.authorName,
-      post.authorAvatar
-    );
-
-    if (post.video) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "video-wrapper";
-
-  const placeholder = document.createElement("div");
-  placeholder.className = "video-placeholder";
-  placeholder.textContent = "🎥 Bekijk video";
-
-  placeholder.onclick = () => openVideoLightbox(post.video);
-
-  wrapper.append(placeholder);
-
-  // ✅ SELECT MODE
-  if (selectMode) {
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.className = "video-select";
-
-    checkbox.checked = selectedVideos.has(post.video);
-
-    checkbox.onchange = () => {
-      if (checkbox.checked) {
-        selectedVideos.add(post.video);
-      } else {
-        selectedVideos.delete(post.video);
-      }
-    };
-
-    wrapper.append(checkbox);
-  }
-
-  card.append(wrapper);
-}
-
-const header = document.createElement("div");
-header.className = "post-header";
-
-const name = document.createElement("span");
-name.textContent = getDisplayName(author);
-
-const meta = document.createElement("small");
-meta.className = "post-meta";
-
-// 🔥 HIER gebeurt de magie
-const date = formatTimestamp(post.createdAt);
-const day = getTripDayLabel(post.createdAt);
-
-meta.textContent = `📅 ${date} • ${day}`;
-
-header.append(
-  createAvatar(author, "avatar-circle tiny"),
-  name,
-  meta
-);
-    card.append(header);
-
-    // TEXT
-    if (post.text) {
-      const text = document.createElement("p");
-      text.textContent = post.text;
-      card.append(text);
-    }
-
-    // IMAGE
-    if (post.image) {
-      const image = document.createElement("img");
-      image.src = post.image;
-      image.className = "post-image";
-      card.append(image);
-    }
-
-
-    els.timeline.append(card);
-  });
-}
-
 async function updateItem(item, text, description, priority) {
   const collectionRef =
     packingMode === "shared"
@@ -1053,62 +900,6 @@ async function updateItem(item, text, description, priority) {
     description,
     priority
   });
-}
-
-function openVideoLightbox(videoSrc) {
-  const lightbox = document.createElement("div");
-  lightbox.className = "video-lightbox";
-
-  const video = document.createElement("video"); // 🔥 DEZE ONTBRAK
-
-  video.src = videoSrc;
-  video.controls = true;
-  video.autoplay = true;
-  video.playsInline = true;
-  video.className = "video-lightbox-player";
-
-  const download = document.createElement("a");
-  download.href = videoSrc;
-  download.download = "stormbruch-video.mp4";
-  download.textContent = "⬇️ Download";
-  download.className = "video-download-btn";
-
-  const close = document.createElement("button");
-  close.innerHTML = "✕";
-  close.className = "video-lightbox-close";
-
-  close.onclick = () => {
-    video.pause();
-    lightbox.remove();
-    document.body.classList.remove("no-scroll");
-  };
-
-  lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox) {
-      video.pause();
-      lightbox.remove();
-      document.body.classList.remove("no-scroll");
-    }
-  });
-
-  lightbox.append(video, download, close);
-  document.body.append(lightbox);
-  document.body.classList.add("no-scroll");
-}
-
-selectBtn.addEventListener("click", () => {
-  selectMode = !selectMode;
-  selectedVideos.clear();
-
-  downloadBtn.classList.toggle("hidden", !selectMode);
-
-  renderPosts(); // 🔥 refresh UI
-});
-
-
-
-async function clearPosts() {
-  await Promise.all(posts.map((post) => deleteDoc(doc(paths.posts, post.id))));
 }
 
 async function clearGallery() {
@@ -1318,18 +1109,6 @@ els.packForm.addEventListener("submit", async (event) => {
 els.clearPackedButton.addEventListener("click", clearPackedItems);
 els.imageInput.addEventListener("change", () => addGalleryImage(els.imageInput.files[0]));
 els.clearGalleryButton.addEventListener("click", clearGallery);
-els.postForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const videoFile = document.getElementById("postVideo")?.files[0];
-
-  await createPost(
-    els.postText.value,
-    els.postImage.files[0],
-    videoFile
-  );
-});
-els.clearPostsButton.addEventListener("click", clearPosts);
 els.lightboxClose.addEventListener("click", () => {
   closeLightbox(els, document.body);
 });
