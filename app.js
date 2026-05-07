@@ -105,6 +105,61 @@ let crew = DEFAULT_CREW;
 let countdownTimer = null;
 let forcedTripMode = false;
 
+let currentUser = null;
+let currentProfileId = "";
+
+function getCurrentProfile() {
+  return crew.find(
+    (person) => person.id === currentProfileId
+  ) || null;
+}
+
+function canEditProfile(person) {
+  return Boolean(
+    person &&
+    currentUser &&
+    person.id === currentProfileId
+  );
+}
+
+function requireProfile() {
+  const profile = getCurrentProfile();
+
+  if (!profile) {
+    els.authModal.classList.remove("hidden");
+    return null;
+  }
+
+  return profile;
+}
+
+function renderProfileControls() {
+  const current = getCurrentProfile();
+
+  if (!current) return;
+
+  els.currentProfileAvatar.replaceChildren(
+    createAvatar(current, "avatar-circle")
+  );
+
+  els.currentProfileName.textContent =
+    current.nickname || current.name;
+}
+
+function getProfileIdForCurrentUser() {
+  if (!currentUser) return "";
+
+  const PROFILE_BY_EMAIL = {
+    "tygovonder66@gmail.com": "tygo",
+    "jurjenvanakkeren@gmail.com": "jurjen",
+    "nariotencate@gmail.com": "nario"
+  };
+
+  return PROFILE_BY_EMAIL[
+    currentUser.email?.toLowerCase()
+  ] || "";
+}
+
 let unsubscribes = [];
 let packingMode = "shared"; // "shared" | "private"
 let privatePackingItems = [];
