@@ -98,7 +98,9 @@ const els = {
   authEmail: document.getElementById("authEmail"),
   authPassword: document.getElementById("authPassword"),
   authError: document.getElementById("authError"),
-  settingsModal: document.getElementById("settingsModal")
+  settingsModal: document.getElementById("settingsModal"),
+  lightboxPrev: document.getElementById("lightboxPrev"),
+lightboxNext: document.getElementById("lightboxNext"),
 
   
 
@@ -1111,6 +1113,13 @@ els.imageInput.addEventListener("change", () => addGalleryImage(els.imageInput.f
 els.clearGalleryButton.addEventListener("click", clearGallery);
 els.lightboxClose.addEventListener("click", () => {
   closeLightbox(els, document.body);
+});
+els.lightboxPrev.addEventListener("click", () => {
+  prevImage(els);
+});
+
+els.lightboxNext.addEventListener("click", () => {
+  nextImage(els);
 });
 els.profileModal.addEventListener("click", (event) => {
   if (event.target === els.profileModal) {
