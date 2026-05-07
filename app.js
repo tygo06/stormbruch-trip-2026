@@ -107,6 +107,8 @@ els.settingsModal.addEventListener("click", (e) => {
   }
 });
 
+const TRIP_START = new Date(2026, 6, 6);
+
 let activeDate = new Date();
 let packingItems = [];
 let galleryImages = [];
