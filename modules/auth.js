@@ -1,83 +1,110 @@
+import { auth } from "../firebase.js";
+
 import {
-  getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-const PROFILE_BY_EMAIL = {
-  "tygovonder66@gmail.com": "tygo",
-  "jurjenvanakkeren@gmail.com": "jurjen",
-  "nariotencate@gmail.com": "nario"
-};
-const savePasswordBtn = document.getElementById("savePassword");
+export function initAuth({
+  els,
+  crew,
+  DEFAULT_CREW,
+  paths,
+  renderCrew,
+  renderPackingList,
+  renderGallery,
+  setMode,
+  activeDate,
+  startFirestoreListeners,
+  stopFirestoreListeners
+}) {
 
+  let currentUser = null;
+  let currentProfileId = "";
 
-let currentUser = null;
-let currentProfileId = "";
-
-function renderProfileControls() {
-  const current = getCurrentProfile();
-
-  if (current) {
-    els.currentProfileAvatar.replaceChildren(createAvatar(current, "avatar-circle"));
-    els.currentProfileName.textContent = current.nickname || current.name;
-    els.logoutButton.classList.remove("hidden");
-    els.profileModal.classList.add("hidden");
-  } else {
-    els.currentProfileAvatar.textContent = "?";
-    els.currentProfileName.textContent = currentUser ? "Onbekend account" : "Inloggen";
-    els.logoutButton.classList.toggle("hidden", !currentUser);
-    els.profileModal.classList.add("hidden");
+  function getCurrentProfile() {
+    return crew.find(
+      (person) => person.id === currentProfileId
+    ) || null;
   }
 
-  els.profileChoices.innerHTML = "";
-}
+  function getProfileIdForCurrentUser() {
+    if (!currentUser) return "";
 
-function getCurrentProfile() {
-  return crew.find((person) => person.id === currentProfileId) || null;
-}
+    const PROFILE_BY_EMAIL = {
+      "tygovonder66@gmail.com": "tygo",
+      "jurjenvanakkeren@gmail.com": "jurjen",
+      "nariotencate@gmail.com": "nario"
+    };
 
-function getProfileIdForCurrentUser() {
-  if (!currentUser) {
-    return "";
+    return PROFILE_BY_EMAIL[
+      currentUser.email?.toLowerCase()
+    ] || "";
   }
 
-  return PROFILE_BY_EMAIL[currentUser.email?.toLowerCase()] || "";
-}
+  async function handleLogin(event) {
+    event.preventDefault();
 
-function canEditProfile(person) {
-  return Boolean(person && currentUser && person.id === getProfileIdForCurrentUser());
-}
+    els.authError.textContent = "";
 
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        els.authEmail.value.trim(),
+        els.authPassword.value
+      );
 
-function requireProfile() {
-  if (!currentUser) {
-    els.authModal.classList.remove("hidden");
-    return null;
+      els.authForm.reset();
+
+    } catch {
+      els.authError.textContent =
+        "Inloggen lukt niet.";
+    }
   }
 
-  const profile = getCurrentProfile();
-  if (profile) {
-    return profile;
+  async function handleAuthState(user) {
+    currentUser = user;
+
+    if (!user) {
+
+      stopFirestoreListeners();
+
+      currentProfileId = "";
+
+      els.authModal.classList.remove("hidden");
+
+      renderCrew();
+      renderPackingList();
+      renderGallery();
+
+      setMode(activeDate);
+
+      return;
+    }
+
+    currentProfileId =
+      getProfileIdForCurrentUser();
+
+    els.authModal.classList.add("hidden");
+
+    startFirestoreListeners();
   }
 
-  els.authError.textContent = "Dit account is niet gekoppeld aan Tygo, Jurjen of Nario.";
-  return null;
+  els.logoutButton.addEventListener(
+    "click",
+    () => signOut(auth)
+  );
+
+  els.authForm.addEventListener(
+    "submit",
+    handleLogin
+  );
+
+  onAuthStateChanged(auth, handleAuthState);
+
+  return {
+    getCurrentProfile: () => getCurrentProfile(),
+    getCurrentUser: () => currentUser
+  };
 }
-
-els.logoutButton.addEventListener("click", () => signOut(auth));
-els.authForm.addEventListener("submit", handleLogin);
-onAuthStateChanged(auth, handleAuthState);
-
-const openSettingsBtn = document.getElementById("openSettings");
-
-openSettingsBtn.addEventListener("click", () => {
-  els.settingsModal.classList.remove("hidden");
-});
-
-els.settingsModal.addEventListener("click", (e) => {
-  if (e.target === els.settingsModal) {
-    els.settingsModal.classList.add("hidden");
-  }
-});
