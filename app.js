@@ -1817,9 +1817,9 @@ settingsBtn.addEventListener("click", () => {
 });
 
 // toggle change
-toggle.addEventListener("change", () => {
-  setLocationEnabled(toggle.checked);
-});
+// toggle.addEventListener("change", () => {
+//  setLocationEnabled(toggle.checked);
+// });
 
 document.querySelectorAll(".toggle-pass").forEach(btn => {
   btn.addEventListener("click", () => {
