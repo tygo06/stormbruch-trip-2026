@@ -24,6 +24,10 @@ export function initMapSystem(options) {
   initMap();
 
   listenToLocations();
+
+  if (locationEnabled) {
+    startLocationTracking();
+  }
 }
 
 function initMap() {
@@ -219,6 +223,8 @@ const person = getCrew().find(
 function startLocationTracking() {
 
   if (!navigator.geolocation) return;
+
+  if (!getCurrentProfile) return;
 
   if (locationWatcher) return;
 

@@ -34,6 +34,9 @@ export function initPosts(options) {
   const compressImage =
     options.compressImage;
 
+  const onPostsChange =
+    options.onPostsChange;
+
   const posts = [];
 
   let selectedVideos = new Set();
@@ -64,6 +67,7 @@ export function initPosts(options) {
       });
 
       renderPosts();
+      onPostsChange?.(posts);
     }
   );
 
@@ -127,6 +131,11 @@ export function initPosts(options) {
     });
 
     els.postForm.reset();
+
+    const preview = document.getElementById("postPreview");
+    if (preview) {
+      preview.innerHTML = "";
+    }
   }
 
   // =========================

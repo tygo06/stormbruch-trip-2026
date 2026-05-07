@@ -126,9 +126,6 @@ function renderWeather(temp, wind, code) {
   if (info.type === "clear") widget.classList.add("weather-sun");
   if (info.type === "storm") widget.classList.add("weather-storm");
 }
-loadWeather();
-setInterval(loadWeather, 600000); // elke 10 min
-
 export {
 loadWeather
 };
