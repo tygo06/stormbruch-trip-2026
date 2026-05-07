@@ -1527,7 +1527,6 @@ function emptyState(text) {
   empty.textContent = text;
   return empty;
 }
-let selectedPriority = "1";
 
 function closeItemModal() {
   document.getElementById("itemModal").classList.add("hidden");
