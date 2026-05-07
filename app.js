@@ -454,7 +454,64 @@ function createAvatarIcon(avatar, name) {
 }
 
 function openUserCard(id, data) {
-  console.log(id, data);
+
+  const existing =
+    document.getElementById("userCard");
+
+  if (existing) {
+    existing.remove();
+  }
+
+  const person =
+    crew.find(p => p.id === id);
+
+  const card =
+    document.createElement("div");
+
+  card.id = "userCard";
+
+  card.className = "user-card";
+
+  card.innerHTML = `
+    <div class="user-card-top">
+      <strong>
+        📍 ${person?.name || id}
+      </strong>
+
+      <button id="closeUserCard">
+        ✕
+      </button>
+    </div>
+
+    <div class="user-card-content">
+
+      <div>
+        🌍 Latitude:
+        ${data.lat.toFixed(5)}
+      </div>
+
+      <div>
+        🧭 Longitude:
+        ${data.lng.toFixed(5)}
+      </div>
+
+      <div>
+        🕒 Laatste update:
+        ${new Date(
+          data.updatedAt
+        ).toLocaleTimeString()}
+      </div>
+
+    </div>
+  `;
+
+  document.body.append(card);
+
+  document
+    .getElementById("closeUserCard")
+    .onclick = () => {
+      card.remove();
+    };
 }
 
 function renderMapUserList(locations) {
@@ -465,7 +522,7 @@ function renderMapUserList(locations) {
 
   list.innerHTML = "";
 
-  Object.entries(locations).forEach(([id]) => {
+  Object.entries(locations).forEach(([id, data]) => {
 
     const person = crew.find(p => p.id === id);
 
@@ -473,7 +530,23 @@ function renderMapUserList(locations) {
 
     div.className = "map-user";
 
-    div.textContent = `📍 ${person?.name || id}`;
+    div.innerHTML = `
+      <span>📍 ${person?.name || id}</span>
+    `;
+
+    div.addEventListener("click", () => {
+
+      // smooth fly
+      map.flyTo(
+        [data.lat, data.lng],
+        17,
+        {
+          duration: 1.6
+        }
+      );
+
+      openUserCard(id, data);
+    });
 
     list.append(div);
   });
