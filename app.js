@@ -136,6 +136,8 @@ let selectedVideos = new Set();
 let selectMode = false;
 let selectedImages = new Set();
 let imageSelectMode = false;
+let map;
+let markers = {};
 let locationWatcher = null;
 let locationEnabled = false;
 let liveLocations = {};
@@ -371,7 +373,51 @@ crew = DEFAULT_CREW.map((person) => {
     renderStats();
   }, showFirestoreError)
   ];
+
 }
+onSnapshot(collection(db, "locations"), (snapshot) => {
+liveLocations = {};
+
+snapshot.forEach((docSnap) => {
+const data = docSnap.data();
+
+
+liveLocations[docSnap.id] = data;
+
+const avatar = getAvatarById(docSnap.id);
+const person = crew.find(p => p.id === docSnap.id);
+
+if (!markers[docSnap.id]) {
+
+  markers[docSnap.id] = L.marker(
+    [data.lat, data.lng],
+    {
+      icon: createAvatarIcon(
+        avatar,
+        person?.name || "?"
+      )
+    }
+  ).addTo(map);
+
+  markers[docSnap.id].on("click", () => {
+    openUserCard(docSnap.id, data);
+  });
+
+} else {
+
+  markers[docSnap.id].setLatLng([
+    data.lat,
+    data.lng
+  ]);
+
+}
+
+});
+
+renderMapUserList(liveLocations);
+
+}, showFirestoreError),
+
 
 function stopFirestoreListeners() {
   unsubscribes.forEach((unsubscribe) => unsubscribe());
@@ -1421,6 +1467,9 @@ async function handleAuthState(user) {
   }, { merge: true });
 
   startFirestoreListeners();
+
+  initMap();
+  startLocationTracking();
 }
 els.secretModeToggle.addEventListener("click", () => {
   forcedTripMode = !forcedTripMode;
@@ -1805,10 +1854,25 @@ function renderStats() {
 
 trackVisit();
 
-initMap();
+function initMap() {
+map = L.map("map").setView([51.35, 8.67], 13);
+
+setTimeout(() => {
+map.invalidateSize();
+}, 100);
+
+L.tileLayer(
+"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+{
+attribution: "Tiles © Esri"
+}
+).addTo(map);
+}
 
 const settingsBtn = document.getElementById("openMapSettings");
 const settingsPanel = document.getElementById("mapSettingsPanel");
+const toggle = document.getElementById("locationToggle");
+
 
 
 // open/close panel
@@ -1837,7 +1901,3 @@ document.querySelectorAll(".toggle-pass").forEach(btn => {
 
 loadWeather();
 setInterval(loadWeather, 600000);
-
-function initMap() {
-console.log("map loaded");
-}
