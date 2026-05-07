@@ -18,7 +18,88 @@ export function initAuth({
   activeDate,
   startFirestoreListeners,
   stopFirestoreListeners
+  
 }) {
+
+const savePasswordBtn =
+  document.getElementById("savePassword");
+
+savePasswordBtn?.addEventListener(
+  "click",
+  async () => {
+
+    const current =
+      document.getElementById("currentPass").value;
+
+    const newPass =
+      document.getElementById("newPass").value;
+
+    const confirm =
+      document.getElementById("confirmPass").value;
+
+    const errorEl =
+      document.getElementById("settingsError");
+
+    errorEl.textContent = "";
+
+    if (!current || !newPass || !confirm) {
+      errorEl.textContent = "Vul alles in";
+      return;
+    }
+
+    if (newPass !== confirm) {
+      errorEl.textContent =
+        "Nieuwe wachtwoorden komen niet overeen";
+      return;
+    }
+
+    if (newPass.length < 6) {
+      errorEl.textContent =
+        "Minimaal 6 karakters";
+      return;
+    }
+
+    const user = auth.currentUser;
+
+    try {
+
+      const credential =
+        EmailAuthProvider.credential(
+          user.email,
+          current
+        );
+
+      await reauthenticateWithCredential(
+        user,
+        credential
+      );
+
+      await updatePassword(user, newPass);
+
+      errorEl.style.color = "green";
+
+      errorEl.textContent =
+        "Wachtwoord gewijzigd 🔐";
+
+      document.getElementById("currentPass").value = "";
+      document.getElementById("newPass").value = "";
+      document.getElementById("confirmPass").value = "";
+
+    } catch (err) {
+
+      console.error(err);
+
+      if (err.code === "auth/wrong-password") {
+        errorEl.textContent =
+          "Huidig wachtwoord klopt niet";
+
+      } else {
+        errorEl.textContent =
+          "Er ging iets mis";
+      }
+    }
+  }
+);
 
   let currentUser = null;
   let currentProfileId = "";

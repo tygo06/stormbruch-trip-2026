@@ -159,69 +159,7 @@ async function trackVisit() {
   }, { merge: true });
 }
 
-savePasswordBtn.addEventListener("click", async () => {
-  const current = document.getElementById("currentPass").value;
-  const newPass = document.getElementById("newPass").value;
-  const confirm = document.getElementById("confirmPass").value;
-  const errorEl = document.getElementById("settingsError");
 
-  errorEl.textContent = "";
-
-  if (!current || !newPass || !confirm) {
-    errorEl.textContent = "Vul alles in";
-    return;
-  }
-
-  if (newPass !== confirm) {
-    errorEl.textContent = "Nieuwe wachtwoorden komen niet overeen";
-    return;
-  }
-
-  if (newPass.length < 6) {
-    errorEl.textContent = "Minimaal 6 karakters";
-    return;
-  }
-
-  const user = auth.currentUser;
-
-  try {
-    // 🔐 stap 1: opnieuw inloggen (veiligheid)
-    const credential = EmailAuthProvider.credential(
-      user.email,
-      current
-    );
-
-    await reauthenticateWithCredential(user, credential);
-
-    // 🔐 stap 2: wachtwoord veranderen
-    await updatePassword(user, newPass);
-
-    errorEl.style.color = "green";
-    errorEl.textContent = "Wachtwoord gewijzigd 🔐";
-
-    // reset inputs
-    document.getElementById("currentPass").value = "";
-    document.getElementById("newPass").value = "";
-    document.getElementById("confirmPass").value = "";
-
-    setTimeout(() => {
-      els.settingsModal.classList.add("hidden");
-      errorEl.textContent = "";
-      errorEl.style.color = "";
-    }, 3000);
-
-  } catch (err) {
-    console.error(err);
-
-    if (err.code === "auth/wrong-password") {
-      errorEl.textContent = "Huidig wachtwoord klopt niet";
-    } else if (err.code === "auth/too-many-requests") {
-      errorEl.textContent = "Te vaak geprobeerd, probeer later opnieuw";
-    } else {
-      errorEl.textContent = "Er ging iets mis";
-    }
-  }
-});
 
 
 
