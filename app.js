@@ -1528,52 +1528,6 @@ function emptyState(text) {
   return empty;
 }
 
-function openItemOptions(item) {
-  editingItem = item;
-
-  document.getElementById("itemModal").classList.remove("hidden");
-
-  document.getElementById("itemName").value = item.text || "";
-  document.getElementById("itemDesc").value = item.description || "";
-
-  selectedPriority = item.priority || "1";
-
-document.querySelectorAll(".priority-buttons button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    selectedPriority = btn.dataset.value;
-
-    document.querySelectorAll(".priority-buttons button").forEach(b => {
-      b.classList.remove("active");
-    });
-
-    btn.classList.add("active");
-  });
-});
-
-document.getElementById("saveItem").addEventListener("click", async () => {
-  if (!editingItem) return;
-
-  const text = document.getElementById("itemName").value;
-  const description = document.getElementById("itemDesc").value;
-
-  await updateItem(editingItem, text, description, selectedPriority);
-
-  closeItemModal();
-});
-
-document.getElementById("cancelItem").addEventListener("click", closeItemModal);
-
-function closeItemModal() {
-  document.getElementById("itemModal").classList.add("hidden");
-  editingItem = null;
-}
-}
-document.getElementById("itemModal").addEventListener("click", (e) => {
-  if (e.target.id === "itemModal") {
-    closeItemModal();
-  }
-});
-
 function openLightbox(src, filename, caption = "", index = 0, list = []) {
   currentLightboxIndex = index;
   currentLightboxList = list;
