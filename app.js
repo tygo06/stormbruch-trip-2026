@@ -142,6 +142,71 @@ let locationWatcher = null;
 let locationEnabled = false;
 let liveLocations = {};
 
+function startLocationTracking() {
+
+  if (!navigator.geolocation) return;
+
+  if (locationWatcher) return;
+
+  locationWatcher = navigator.geolocation.watchPosition(
+
+    async (pos) => {
+
+      const { latitude, longitude } = pos.coords;
+
+      const profile = getCurrentProfile();
+
+      if (!profile) return;
+
+      await setDoc(
+        doc(db, "locations", profile.id),
+        {
+          lat: latitude,
+          lng: longitude,
+          updatedAt: new Date().toISOString()
+        }
+      );
+
+    },
+
+    (err) => {
+      console.error("location error", err);
+    },
+
+    {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 10000
+    }
+  );
+}
+
+function stopLocationTracking() {
+
+  if (locationWatcher !== null) {
+
+    navigator.geolocation.clearWatch(locationWatcher);
+
+    locationWatcher = null;
+  }
+}
+
+function setLocationEnabled(enabled) {
+
+  locationEnabled = enabled;
+
+  localStorage.setItem(
+    "locationEnabled",
+    enabled
+  );
+
+  if (enabled) {
+    startLocationTracking();
+  } else {
+    stopLocationTracking();
+  }
+}
+
 const selectBtn = document.getElementById("selectToggle");
 const downloadBtn = document.getElementById("downloadSelected");
 
@@ -1881,9 +1946,9 @@ settingsBtn.addEventListener("click", () => {
 });
 
 // toggle change
-// toggle.addEventListener("change", () => {
-//  setLocationEnabled(toggle.checked);
-// });
+toggle.addEventListener("change", () => {
+setLocationEnabled(toggle.checked);
+});
 
 document.querySelectorAll(".toggle-pass").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -1901,3 +1966,13 @@ document.querySelectorAll(".toggle-pass").forEach(btn => {
 
 loadWeather();
 setInterval(loadWeather, 600000);
+
+window.addEventListener("load", () => {
+
+  const saved =
+    localStorage.getItem("locationEnabled") === "true";
+
+  toggle.checked = saved;
+
+  setLocationEnabled(saved);
+});
