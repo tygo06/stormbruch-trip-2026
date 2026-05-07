@@ -967,6 +967,20 @@ renderPackingList();
 renderGallery();
 setMode(activeDate);
 
+const authState = initAuth({
+  els,
+  crew,
+  DEFAULT_CREW,
+  paths,
+  renderCrew,
+  renderPackingList,
+  renderGallery,
+  setMode,
+  activeDate,
+  startFirestoreListeners,
+  stopFirestoreListeners
+});
+
     return;
   }
 
