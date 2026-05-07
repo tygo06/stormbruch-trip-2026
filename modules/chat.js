@@ -9,11 +9,14 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+let getCurrentProfile = null;
+let getCurrentUser = null;
+
 const messagesRef = collection(db, "messages");
 
 onSnapshot(messagesRef, (snapshot) => {
 
-  if (!currentUser) return;
+  if (!getCurrentUser()) return;
 
   chatMessages.innerHTML = "";
 
@@ -29,7 +32,7 @@ onSnapshot(messagesRef, (snapshot) => {
 
     const div = document.createElement("div");
 
-    const isOwn = data.authorUid === currentUser.uid;
+    const isOwn = data.authorUid === getCurrentUser().uid;
 
     div.className = isOwn
       ? "message own"
@@ -145,7 +148,7 @@ chatForm.addEventListener("submit", async (e) => {
 await addDoc(messagesRef, {
   text,
   authorId: profile.id,
-  authorUid: currentUser.uid,
+  authorUid: getCurrentUser().uid,
   authorName: profile.name,
   createdAt: serverTimestamp()
 });
