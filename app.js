@@ -1,6 +1,7 @@
 import {auth, db } from "./firebase.js";
 import { loadWeather } from "./modules/weather.js";
 import { initChat } from "./modules/chat.js";
+import { initPosts } from "./modules/posts.js";
 
 import {
   openLightbox,
