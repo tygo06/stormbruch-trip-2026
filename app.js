@@ -100,8 +100,8 @@ const els = {
   authPassword: document.getElementById("authPassword"),
   authError: document.getElementById("authError"),
   settingsModal: document.getElementById("settingsModal"),
-  lightboxPrev: document.getElementById("lightboxPrev"),
-lightboxNext: document.getElementById("lightboxNext"),
+lightboxPrev: document.getElementById("prevBtn"),
+lightboxNext: document.getElementById("nextBtn"),
 
   
 
