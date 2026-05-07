@@ -1,3 +1,17 @@
+function getChaosMessage() {
+  const chaosMessages = [
+    "🍺 Bier smaakt vandaag extra goed",
+    "🛶 Dit is survivallen boys",
+    "💀 RIP tent alvast",
+    "🔥 dit wordt een legendary dag",
+    "🥴 iemand gaat hier spijt van krijgen"
+  ];
+
+  return chaosMessages[
+    Math.floor(Math.random() * chaosMessages.length)
+  ];
+}
+
 async function loadWeather() {
   const lat = 51.351115;
   const lon = 8.6780082;

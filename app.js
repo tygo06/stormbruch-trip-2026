@@ -1353,6 +1353,25 @@ document.getElementById("itemModal").addEventListener("click", (e) => {
   }
 });
 
+function nextImage() {
+  if (!currentLightboxList.length) return;
+
+  currentLightboxIndex =
+    (currentLightboxIndex + 1) % currentLightboxList.length;
+
+  updateLightbox();
+}
+
+function prevImage() {
+  if (!currentLightboxList.length) return;
+
+  currentLightboxIndex =
+    (currentLightboxIndex - 1 + currentLightboxList.length)
+    % currentLightboxList.length;
+
+  updateLightbox();
+}
+
 function openLightbox(src, filename, caption = "", index = 0, list = []) {
   currentLightboxIndex = index;
   currentLightboxList = list;
@@ -1855,4 +1874,4 @@ document.querySelectorAll(".toggle-pass").forEach(btn => {
 });
 
 loadWeather();
-setinterval(loadWeather, 600000);
+setinterval(LoadWeather, 600000);
