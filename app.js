@@ -449,6 +449,51 @@ const data = docSnap.data();
 
 liveLocations[docSnap.id] = data;
 
+function createAvatarIcon(avatar, name) {
+
+  return L.divIcon({
+    className: "custom-marker",
+    html: avatar
+      ? `<img src="${avatar}" class="map-avatar">`
+      : `<div class="map-avatar-fallback">${name[0]}</div>`,
+    iconSize: [40, 40]
+  });
+}
+
+function openUserCard(id, data) {
+  console.log(id, data);
+}
+
+function renderMapUserList(locations) {
+
+  const list = document.getElementById("mapUserList");
+
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  Object.entries(locations).forEach(([id]) => {
+
+    const person = crew.find(p => p.id === id);
+
+    const div = document.createElement("div");
+
+    div.className = "map-user";
+
+    div.textContent =
+      `📍 ${person?.name || id}`;
+
+    list.append(div);
+  });
+}
+
+function getAvatarById(id) {
+
+  const person = crew.find(p => p.id === id);
+
+  return person?.avatar || "";
+}
+
 const avatar = getAvatarById(docSnap.id);
 const person = crew.find(p => p.id === docSnap.id);
 
@@ -481,7 +526,7 @@ if (!markers[docSnap.id]) {
 
 renderMapUserList(liveLocations);
 
-}, showFirestoreError),
+}, showFirestoreError);
 
 
 function stopFirestoreListeners() {
