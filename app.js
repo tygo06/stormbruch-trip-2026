@@ -1805,7 +1805,7 @@ function renderStats() {
 
 trackVisit();
 
-// initMap();
+initMap();
 
 const settingsBtn = document.getElementById("openMapSettings");
 const settingsPanel = document.getElementById("mapSettingsPanel");
@@ -1837,3 +1837,7 @@ document.querySelectorAll(".toggle-pass").forEach(btn => {
 
 loadWeather();
 setInterval(loadWeather, 600000);
+
+function initMap() {
+console.log("map loaded");
+}
