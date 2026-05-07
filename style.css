@@ -326,20 +326,20 @@ body.trip-active .eyebrow {
   border-color: #6fd1c7;
 }
 
+#prevBtn {
+  left: 1rem;
+}
+
+#nextBtn {
+  right: 1rem;
+}
+
 .lightbox-nav {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0,0,0,0.5);
-  color: white;
-  border: none;
-  font-size: 24px;
-  padding: 10px;
-  cursor: pointer;
+  z-index: 20;
 }
-
-#prevBtn { left: 10px; }
-#nextBtn { right: 10px; }
 
 .mode-chip {
   flex: 0 0 auto;

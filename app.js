@@ -127,6 +127,7 @@ const TRIP_START = new Date(2026, 6, 6);
 let activeDate = new Date();
 let packingItems = [];
 let galleryImages = [];
+let posts = [];
 let crew = DEFAULT_CREW;
 let countdownTimer = null;
 let forcedTripMode = false;
@@ -1087,7 +1088,9 @@ initPosts({
   createAvatar,
   requireProfile,
   openLightbox,
-  els
+  els,
+  paths,
+  db
 });
 
 initMapSystem({
