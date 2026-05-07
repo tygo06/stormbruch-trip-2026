@@ -473,8 +473,7 @@ function renderMapUserList(locations) {
 
     div.className = "map-user";
 
-    div.textContent =
-      `📍 ${person?.name || id}`;
+    div.textContent = `📍 ${person?.name || id}`;
 
     list.append(div);
   });
@@ -488,45 +487,49 @@ function getAvatarById(id) {
 }
 
 onSnapshot(collection(db, "locations"), (snapshot) => {
-liveLocations = {};
 
-snapshot.forEach((docSnap) => {
-const data = docSnap.data();
+  if (!map) return;
 
+  liveLocations = {};
 
-liveLocations[docSnap.id] = data;
+  snapshot.forEach((docSnap) => {
 
-const avatar = getAvatarById(docSnap.id);
-const person = crew.find(p => p.id === docSnap.id);
+    const data = docSnap.data();
 
-if (!markers[docSnap.id]) {
+    liveLocations[docSnap.id] = data;
 
-  markers[docSnap.id] = L.marker(
-    [data.lat, data.lng],
-    {
-      icon: createAvatarIcon(
-        avatar,
-        person?.name || "?"
-      )
+    const avatar = getAvatarById(docSnap.id);
+
+    const person = crew.find(
+      p => p.id === docSnap.id
+    );
+
+    if (!markers[docSnap.id]) {
+
+      markers[docSnap.id] = L.marker(
+        [data.lat, data.lng],
+        {
+          icon: createAvatarIcon(
+            avatar,
+            person?.name || "?"
+          )
+        }
+      ).addTo(map);
+
+      markers[docSnap.id].on("click", () => {
+        openUserCard(docSnap.id, data);
+      });
+
+    } else {
+
+      markers[docSnap.id].setLatLng([
+        data.lat,
+        data.lng
+      ]);
     }
-  ).addTo(map);
-
-  markers[docSnap.id].on("click", () => {
-    openUserCard(docSnap.id, data);
   });
 
-} else {
-
-  markers[docSnap.id].setLatLng([
-    data.lat,
-    data.lng
-  ]);
-
-}
-
-});
-
-renderMapUserList(liveLocations);
+  renderMapUserList(liveLocations);
 
 }, showFirestoreError);
 
@@ -896,9 +899,11 @@ async function loadAnalyticsChart() {
     .map((label, i) => ({ label, value: data[i] }))
     .sort((a, b) => new Date(a.label) - new Date(b.label));
 
-  const ctx = document.getElementById("analyticsChart");
+const ctx = document.getElementById("analyticsChart");
 
-  new Chart(ctx, {
+if (!ctx) return;
+
+new Chart(ctx, {
     type: "line",
     data: {
       labels: sorted.map(i => i.label),
