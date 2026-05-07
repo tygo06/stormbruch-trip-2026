@@ -1527,8 +1527,6 @@ function emptyState(text) {
   empty.textContent = text;
   return empty;
 }
-
-let editingItem = null;
 let selectedPriority = "1";
 
 function closeItemModal() {
