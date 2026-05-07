@@ -1046,12 +1046,17 @@ body.dark-mode textarea::placeholder {
 }
 
 .lightbox-panel {
+  position: relative;
   display: grid;
   gap: 12px;
   width: min(1040px, 100%);
   max-height: calc(100vh - 40px);
 }
 
+.lightbox-nav {
+  background: rgba(0,0,0,0.5);
+  color: white;
+}
 .lightbox-actions {
   display: flex;
   justify-content: flex-end;
