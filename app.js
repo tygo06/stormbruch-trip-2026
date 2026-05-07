@@ -1805,7 +1805,7 @@ function renderStats() {
 
 trackVisit();
 
-initMap();
+// initMap();
 
 const settingsBtn = document.getElementById("openMapSettings");
 const settingsPanel = document.getElementById("mapSettingsPanel");
