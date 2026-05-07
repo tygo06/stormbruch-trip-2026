@@ -157,3 +157,13 @@ await addDoc(messagesRef, {
     console.error("SEND ERROR ❌", err);
   }
 });
+
+export function initChat(options) {
+
+  getCurrentProfile = options.getCurrentProfile;
+  getCurrentUser = options.currentUser;
+
+  initMessages();
+  initTyping();
+  initSendMessage();
+}
