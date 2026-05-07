@@ -593,13 +593,22 @@ onSnapshot(collection(db, "locations"), (snapshot) => {
         openUserCard(docSnap.id, data);
       });
 
-    } else {
+} else {
 
-      markers[docSnap.id].setLatLng([
-        data.lat,
-        data.lng
-      ]);
-    }
+  markers[docSnap.id].setLatLng([
+    data.lat,
+    data.lng
+  ]);
+
+  // 🔥 update avatar icon ook
+  markers[docSnap.id].setIcon(
+    createAvatarIcon(
+      avatar,
+      person?.name || "?"
+    )
+  );
+
+}
   });
 
   renderMapUserList(liveLocations);
