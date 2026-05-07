@@ -1,6 +1,13 @@
 import {auth, db } from "./firebase.js";
 import { loadWeather } from "./modules/weather.js";
 
+import {
+  openLightbox,
+  closeLightbox,
+  nextImage,
+  prevImage
+} from "./modules/lightbox.js";
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import {
   getAuth,
@@ -782,88 +789,95 @@ function renderGallery() {
   els.gallery.innerHTML = "";
 
   if (!galleryImages.length) {
-    els.gallery.append(emptyState("Zet hier memes, AI beelden en chaotische previews neer."));
+    els.gallery.append(
+      emptyState("Zet hier memes, AI beelden en chaotische previews neer.")
+    );
     return;
-    
   }
 
   galleryImages.forEach((image, index) => {
     const item = document.createElement("div");
     item.className = "gallery-item";
-    const author = getAuthor(image.authorId, image.authorName, image.authorAvatar);
+
+    const author = getAuthor(
+      image.authorId,
+      image.authorName,
+      image.authorAvatar
+    );
 
     const img = document.createElement("img");
     img.src = image.src;
     img.alt = image.name || "Tripfoto";
-img.addEventListener("click", () => {
-  const list = galleryImages.map((img) => ({
-    src: img.src,
-    name: img.name,
-    caption: `Geupload door ${getDisplayName(
-      getAuthor(img.authorId, img.authorName, img.authorAvatar)
-    )}`
-  }));
 
+    // ✅ select mode checkbox
+    if (imageSelectMode) {
+      const checkbox = document.createElement("input");
 
-  openLightbox(
-    image.src,
-    image.name,
-    `Geupload door ${getDisplayName(author)}`,
-    index,
-    list
-  );
-});
+      checkbox.type = "checkbox";
+      checkbox.className = "image-select";
 
-if (imageSelectMode) {
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  checkbox.className = "image-select";
+      checkbox.checked = selectedImages.has(image.src);
 
-  checkbox.checked = selectedImages.has(image.src);
+      checkbox.onchange = () => {
+        if (checkbox.checked) {
+          selectedImages.add(image.src);
+        } else {
+          selectedImages.delete(image.src);
+        }
+      };
 
-  checkbox.onchange = () => {
-    if (checkbox.checked) {
-      selectedImages.add(image.src);
-    } else {
-      selectedImages.delete(image.src);
+      item.appendChild(checkbox);
     }
-  };
 
-  item.appendChild(checkbox);
-}
+    // ✅ lightbox
+    img.addEventListener("click", () => {
+      if (imageSelectMode) return;
 
-img.addEventListener("click", () => {
-  if (imageSelectMode) return; // 👈 dit toevoegen
+      const list = galleryImages.map((img) => ({
+        src: img.src,
+        name: img.name,
+        caption: `Geupload door ${getDisplayName(
+          getAuthor(
+            img.authorId,
+            img.authorName,
+            img.authorAvatar
+          )
+        )}`
+      }));
 
-  const list = galleryImages.map((img) => ({
-    src: img.src,
-    name: img.name,
-    caption: `Geupload door ${getDisplayName(
-      getAuthor(img.authorId, img.authorName, img.authorAvatar)
-    )}`
-  }));
-
-  openLightbox(
-    image.src,
-    image.name,
-    `Geupload door ${getDisplayName(author)}`,
-    index,
-    list
-  );
-});
+      openLightbox(
+        els,
+        document.body,
+        image.src,
+        image.name,
+        `Geupload door ${getDisplayName(author)}`,
+        index,
+        list
+      );
+    });
 
     const badge = document.createElement("div");
     badge.className = "gallery-author";
-    badge.append(createAvatar(author, "avatar-circle tiny"), document.createTextNode(getDisplayName(author)));
+
+    badge.append(
+      createAvatar(author, "avatar-circle tiny"),
+      document.createTextNode(getDisplayName(author))
+    );
 
     const remove = document.createElement("button");
+
     remove.type = "button";
     remove.className = "icon-button";
     remove.textContent = "x";
+
     remove.setAttribute("aria-label", "Foto verwijderen");
-    remove.addEventListener("click", () => deleteDoc(doc(paths.gallery, image.id)));
+
+    remove.addEventListener("click", () => {
+      deleteDoc(doc(paths.gallery, image.id));
+    });
 
     item.append(img, badge, remove);
+
     els.gallery.append(item);
   });
 }
@@ -1353,61 +1367,6 @@ document.getElementById("itemModal").addEventListener("click", (e) => {
   }
 });
 
-function nextImage() {
-  if (!currentLightboxList.length) return;
-
-  currentLightboxIndex =
-    (currentLightboxIndex + 1) % currentLightboxList.length;
-
-  updateLightbox();
-}
-
-function prevImage() {
-  if (!currentLightboxList.length) return;
-
-  currentLightboxIndex =
-    (currentLightboxIndex - 1 + currentLightboxList.length)
-    % currentLightboxList.length;
-
-  updateLightbox();
-}
-
-function openLightbox(src, filename, caption = "", index = 0, list = []) {
-  currentLightboxIndex = index;
-  currentLightboxList = list;
-
-  updateLightbox();
-
-  els.lightbox.classList.remove("hidden");
-  els.body.classList.add("no-scroll");
-}
-function updateLightbox() {
-  const item = currentLightboxList[currentLightboxIndex];
-  if (!item) return;
-
-  els.lightboxImage.src = item.src;
-  els.lightboxCaption.textContent = item.caption || "";
-  els.lightboxDownload.href = item.src;
-  els.lightboxDownload.download = getDownloadName(item.name || "stormbruch");
-}
-
-function closeLightbox() {
-  els.lightbox.classList.add("hidden");
-  els.lightboxImage.removeAttribute("src");
-  els.lightboxCaption.textContent = "";
-  els.lightboxDownload.removeAttribute("href");
-  els.body.classList.remove("no-scroll");
-}
-
-function getDownloadName(filename) {
-  const clean = filename
-    .replace(/\.[a-z0-9]+$/i, "")
-    .replace(/[^a-z0-9-]+/gi, "-")
-    .replace(/^-|-$/g, "");
-
-  return `${clean || "stormbruch-foto"}.jpg`;
-}
-
 async function handleLogin(event) {
   event.preventDefault();
   els.authError.textContent = "";
@@ -1501,11 +1460,8 @@ els.postForm.addEventListener("submit", async (event) => {
   );
 });
 els.clearPostsButton.addEventListener("click", clearPosts);
-els.lightboxClose.addEventListener("click", closeLightbox);
-els.lightbox.addEventListener("click", (event) => {
-  if (event.target === els.lightbox) {
-    closeLightbox();
-  }
+els.lightboxClose.addEventListener("click", () => {
+  closeLightbox(els, document.body);
 });
 els.profileModal.addEventListener("click", (event) => {
   if (event.target === els.profileModal) {
@@ -1514,9 +1470,18 @@ els.profileModal.addEventListener("click", (event) => {
 });
 window.addEventListener("keydown", (event) => {
   if (!els.lightbox.classList.contains("hidden")) {
-    if (event.key === "ArrowRight") nextImage();
-    if (event.key === "ArrowLeft") prevImage();
-    if (event.key === "Escape") closeLightbox();
+
+    if (event.key === "ArrowRight") {
+      nextImage(els);
+    }
+
+    if (event.key === "ArrowLeft") {
+      prevImage(els);
+    }
+
+    if (event.key === "Escape") {
+      closeLightbox(els, document.body);
+    }
   }
 });
 
@@ -1573,9 +1538,6 @@ function updatePackingTabs() {
   document.getElementById("tabShared").classList.toggle("active", packingMode === "shared");
   document.getElementById("tabPrivate").classList.toggle("active", packingMode === "private");
 }
-
-document.getElementById("nextBtn")?.addEventListener("click", nextImage);
-document.getElementById("prevBtn")?.addEventListener("click", prevImage);
 
 // safe init
 let savedTheme = localStorage.getItem("theme") || "light";
@@ -1874,4 +1836,4 @@ document.querySelectorAll(".toggle-pass").forEach(btn => {
 });
 
 loadWeather();
-setinterval(LoadWeather, 600000);
+setInterval(loadWeather, 600000);
