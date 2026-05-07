@@ -26,6 +26,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  serverTimestamp,
   setDoc,
   updateDoc,
   increment 
@@ -440,14 +441,6 @@ crew = DEFAULT_CREW.map((person) => {
   ];
 
 }
-onSnapshot(collection(db, "locations"), (snapshot) => {
-liveLocations = {};
-
-snapshot.forEach((docSnap) => {
-const data = docSnap.data();
-
-
-liveLocations[docSnap.id] = data;
 
 function createAvatarIcon(avatar, name) {
 
@@ -493,6 +486,15 @@ function getAvatarById(id) {
 
   return person?.avatar || "";
 }
+
+onSnapshot(collection(db, "locations"), (snapshot) => {
+liveLocations = {};
+
+snapshot.forEach((docSnap) => {
+const data = docSnap.data();
+
+
+liveLocations[docSnap.id] = data;
 
 const avatar = getAvatarById(docSnap.id);
 const person = crew.find(p => p.id === docSnap.id);
